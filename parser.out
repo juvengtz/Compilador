@@ -1,0 +1,2287 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> PROGRAMA
+Rule 1     PROGRAMA -> PROGRAM ID SEMICOLON VARS FUNC BLOQUE
+Rule 2     PROGRAMA -> PROGRAM ID SEMICOLON FUNC BLOQUE
+Rule 3     VARS -> VAR id_list COLON TIPO SEMICOLON
+Rule 4     VARS -> empty
+Rule 5     id_list -> id_list COMMA ID array
+Rule 6     id_list -> ID array
+Rule 7     array -> L_BRACKET CTE_I R_BRACKET
+Rule 8     array -> empty
+Rule 9     TIPO -> INT
+Rule 10    TIPO -> FLOAT
+Rule 11    TIPO -> CHAR
+Rule 12    FUNC -> FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE
+Rule 13    PARMS -> TIPO ID id_list
+Rule 14    PARMS -> empty
+Rule 15    BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE
+Rule 16    ESTATUTO_rep -> ESTATUTO_rep ESTATUTO
+Rule 17    ESTATUTO_rep -> ESTATUTO
+Rule 18    ESTATUTO -> ASIGNACION
+Rule 19    ESTATUTO -> CONDICION
+Rule 20    ESTATUTO -> ESCRITURA
+Rule 21    ESTATUTO -> LLAMADA
+Rule 22    ESTATUTO -> RETORNO
+Rule 23    ESTATUTO -> LECTURA
+Rule 24    ESTATUTO -> REPETICION
+Rule 25    ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON
+Rule 26    LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON
+Rule 27    LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON
+Rule 28    exp_rep -> exp_rep COMMA EXPRESION
+Rule 29    exp_rep -> EXPRESION
+Rule 30    FUNC_ESPECIAL -> MEDIA
+Rule 31    FUNC_ESPECIAL -> MODA
+Rule 32    FUNC_ESPECIAL -> VARIANZA
+Rule 33    FUNC_ESPECIAL -> REG
+Rule 34    FUNC_ESPECIAL -> PLOTXY
+Rule 35    RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON
+Rule 36    LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON
+Rule 37    ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON
+Rule 38    escritura_rep -> escritura_rep COMMA escritura_aux
+Rule 39    escritura_rep -> escritura_aux
+Rule 40    escritura_aux -> CTE_S
+Rule 41    escritura_aux -> EXPRESION
+Rule 42    CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux
+Rule 43    else_aux -> ELSE BLOQUE
+Rule 44    else_aux -> empty
+Rule 45    REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE
+Rule 46    REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE
+Rule 47    EXPRESION -> EXP
+Rule 48    EXPRESION -> EXP RELOP EXP
+Rule 49    RELOP -> GT
+Rule 50    RELOP -> LT
+Rule 51    RELOP -> EQ
+Rule 52    RELOP -> LEQ
+Rule 53    RELOP -> GEQ
+Rule 54    EXP -> TERMINO
+Rule 55    EXP -> TERMINO MASMENOS TERMINO
+Rule 56    MASMENOS -> PLUS
+Rule 57    MASMENOS -> MINUS
+Rule 58    TERMINO -> FACTOR
+Rule 59    TERMINO -> FACTOR MULTDIV FACTOR
+Rule 60    MULTDIV -> MULT
+Rule 61    MULTDIV -> DIV
+Rule 62    FACTOR -> L_PAREN EXPRESION R_PAREN
+Rule 63    FACTOR -> MASMENOS VAR_CTE
+Rule 64    FACTOR -> VAR_CTE
+Rule 65    VAR_CTE -> ID
+Rule 66    VAR_CTE -> CTE_I
+Rule 67    VAR_CTE -> CTE_F
+Rule 68    VAR_CTE -> CTE_CHAR
+Rule 69    empty -> <empty>
+
+Terminals, with rules where they appear
+
+CHAR                 : 11
+COLON                : 3
+COMMA                : 5 28 38
+CTE_CHAR             : 68
+CTE_F                : 67
+CTE_I                : 7 66
+CTE_S                : 40
+DIV                  : 61
+DO                   : 46
+ELSE                 : 43
+EQ                   : 51
+EQUAL                : 25 46
+FLOAT                : 10
+FOR                  : 46
+FUNCTION             : 12
+GEQ                  : 53
+GT                   : 49
+ID                   : 1 2 5 6 12 13 25 27 46 65
+IF                   : 42
+INT                  : 9
+LEQ                  : 52
+LT                   : 50
+L_BRACE              : 15
+L_BRACKET            : 7
+L_PAREN              : 12 26 27 35 36 37 42 45 62
+MEDIA                : 30
+MINUS                : 57
+MODA                 : 31
+MULT                 : 60
+PLOTXY               : 34
+PLUS                 : 56
+PROGRAM              : 1 2
+READ                 : 36
+REG                  : 33
+RETURN               : 35
+R_BRACE              : 15
+R_BRACKET            : 7
+R_PAREN              : 12 26 27 35 36 37 42 45 62
+SEMICOLON            : 1 2 3 25 26 27 35 36 37
+TO                   : 46
+VAR                  : 3
+VARIANZA             : 32
+WHILE                : 45
+WRITE                : 37
+error                : 
+
+Nonterminals, with rules where they appear
+
+ASIGNACION           : 18
+BLOQUE               : 1 2 12 42 43 45 46
+CONDICION            : 19
+ESCRITURA            : 20
+ESTATUTO             : 16 17
+ESTATUTO_rep         : 15 16
+EXP                  : 47 48 48
+EXPRESION            : 25 28 29 35 41 42 45 46 46 62
+FACTOR               : 58 59 59
+FUNC                 : 1 2
+FUNC_ESPECIAL        : 26
+LECTURA              : 23
+LLAMADA              : 21
+MASMENOS             : 55 63
+MULTDIV              : 59
+PARMS                : 12
+PROGRAMA             : 0
+RELOP                : 48
+REPETICION           : 24
+RETORNO              : 22
+TERMINO              : 54 55 55
+TIPO                 : 3 12 13
+VARS                 : 1 12
+VAR_CTE              : 63 64
+array                : 5 6 25
+else_aux             : 42
+empty                : 4 8 14 44
+escritura_aux        : 38 39
+escritura_rep        : 37 38
+exp_rep              : 26 27 28
+id_list              : 3 5 13 36
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . PROGRAMA
+    (1) PROGRAMA -> . PROGRAM ID SEMICOLON VARS FUNC BLOQUE
+    (2) PROGRAMA -> . PROGRAM ID SEMICOLON FUNC BLOQUE
+
+    PROGRAM         shift and go to state 2
+
+    PROGRAMA                       shift and go to state 1
+
+state 1
+
+    (0) S' -> PROGRAMA .
+
+
+
+state 2
+
+    (1) PROGRAMA -> PROGRAM . ID SEMICOLON VARS FUNC BLOQUE
+    (2) PROGRAMA -> PROGRAM . ID SEMICOLON FUNC BLOQUE
+
+    ID              shift and go to state 3
+
+
+state 3
+
+    (1) PROGRAMA -> PROGRAM ID . SEMICOLON VARS FUNC BLOQUE
+    (2) PROGRAMA -> PROGRAM ID . SEMICOLON FUNC BLOQUE
+
+    SEMICOLON       shift and go to state 4
+
+
+state 4
+
+    (1) PROGRAMA -> PROGRAM ID SEMICOLON . VARS FUNC BLOQUE
+    (2) PROGRAMA -> PROGRAM ID SEMICOLON . FUNC BLOQUE
+    (3) VARS -> . VAR id_list COLON TIPO SEMICOLON
+    (4) VARS -> . empty
+    (12) FUNC -> . FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE
+    (69) empty -> .
+
+  ! shift/reduce conflict for FUNCTION resolved as shift
+    VAR             shift and go to state 7
+    FUNCTION        shift and go to state 9
+
+  ! FUNCTION        [ reduce using rule 69 (empty -> .) ]
+
+    VARS                           shift and go to state 5
+    FUNC                           shift and go to state 6
+    empty                          shift and go to state 8
+
+state 5
+
+    (1) PROGRAMA -> PROGRAM ID SEMICOLON VARS . FUNC BLOQUE
+    (12) FUNC -> . FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE
+
+    FUNCTION        shift and go to state 9
+
+    FUNC                           shift and go to state 10
+
+state 6
+
+    (2) PROGRAMA -> PROGRAM ID SEMICOLON FUNC . BLOQUE
+    (15) BLOQUE -> . L_BRACE ESTATUTO_rep R_BRACE
+
+    L_BRACE         shift and go to state 12
+
+    BLOQUE                         shift and go to state 11
+
+state 7
+
+    (3) VARS -> VAR . id_list COLON TIPO SEMICOLON
+    (5) id_list -> . id_list COMMA ID array
+    (6) id_list -> . ID array
+
+    ID              shift and go to state 14
+
+    id_list                        shift and go to state 13
+
+state 8
+
+    (4) VARS -> empty .
+
+    FUNCTION        reduce using rule 4 (VARS -> empty .)
+    L_BRACE         reduce using rule 4 (VARS -> empty .)
+
+
+state 9
+
+    (12) FUNC -> FUNCTION . TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE
+    (9) TIPO -> . INT
+    (10) TIPO -> . FLOAT
+    (11) TIPO -> . CHAR
+
+    INT             shift and go to state 16
+    FLOAT           shift and go to state 17
+    CHAR            shift and go to state 18
+
+    TIPO                           shift and go to state 15
+
+state 10
+
+    (1) PROGRAMA -> PROGRAM ID SEMICOLON VARS FUNC . BLOQUE
+    (15) BLOQUE -> . L_BRACE ESTATUTO_rep R_BRACE
+
+    L_BRACE         shift and go to state 12
+
+    BLOQUE                         shift and go to state 19
+
+state 11
+
+    (2) PROGRAMA -> PROGRAM ID SEMICOLON FUNC BLOQUE .
+
+    $end            reduce using rule 2 (PROGRAMA -> PROGRAM ID SEMICOLON FUNC BLOQUE .)
+
+
+state 12
+
+    (15) BLOQUE -> L_BRACE . ESTATUTO_rep R_BRACE
+    (16) ESTATUTO_rep -> . ESTATUTO_rep ESTATUTO
+    (17) ESTATUTO_rep -> . ESTATUTO
+    (18) ESTATUTO -> . ASIGNACION
+    (19) ESTATUTO -> . CONDICION
+    (20) ESTATUTO -> . ESCRITURA
+    (21) ESTATUTO -> . LLAMADA
+    (22) ESTATUTO -> . RETORNO
+    (23) ESTATUTO -> . LECTURA
+    (24) ESTATUTO -> . REPETICION
+    (25) ASIGNACION -> . ID array EQUAL EXPRESION SEMICOLON
+    (42) CONDICION -> . IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux
+    (37) ESCRITURA -> . WRITE L_PAREN escritura_rep R_PAREN SEMICOLON
+    (26) LLAMADA -> . FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON
+    (27) LLAMADA -> . ID L_PAREN exp_rep R_PAREN SEMICOLON
+    (35) RETORNO -> . RETURN L_PAREN EXPRESION R_PAREN SEMICOLON
+    (36) LECTURA -> . READ L_PAREN id_list R_PAREN SEMICOLON
+    (45) REPETICION -> . WHILE L_PAREN EXPRESION R_PAREN BLOQUE
+    (46) REPETICION -> . FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE
+    (30) FUNC_ESPECIAL -> . MEDIA
+    (31) FUNC_ESPECIAL -> . MODA
+    (32) FUNC_ESPECIAL -> . VARIANZA
+    (33) FUNC_ESPECIAL -> . REG
+    (34) FUNC_ESPECIAL -> . PLOTXY
+
+    ID              shift and go to state 29
+    IF              shift and go to state 30
+    WRITE           shift and go to state 31
+    RETURN          shift and go to state 33
+    READ            shift and go to state 34
+    WHILE           shift and go to state 35
+    FOR             shift and go to state 36
+    MEDIA           shift and go to state 37
+    MODA            shift and go to state 38
+    VARIANZA        shift and go to state 39
+    REG             shift and go to state 40
+    PLOTXY          shift and go to state 41
+
+    ESTATUTO_rep                   shift and go to state 20
+    ESTATUTO                       shift and go to state 21
+    ASIGNACION                     shift and go to state 22
+    CONDICION                      shift and go to state 23
+    ESCRITURA                      shift and go to state 24
+    LLAMADA                        shift and go to state 25
+    RETORNO                        shift and go to state 26
+    LECTURA                        shift and go to state 27
+    REPETICION                     shift and go to state 28
+    FUNC_ESPECIAL                  shift and go to state 32
+
+state 13
+
+    (3) VARS -> VAR id_list . COLON TIPO SEMICOLON
+    (5) id_list -> id_list . COMMA ID array
+
+    COLON           shift and go to state 42
+    COMMA           shift and go to state 43
+
+
+state 14
+
+    (6) id_list -> ID . array
+    (7) array -> . L_BRACKET CTE_I R_BRACKET
+    (8) array -> . empty
+    (69) empty -> .
+
+    L_BRACKET       shift and go to state 45
+    COLON           reduce using rule 69 (empty -> .)
+    COMMA           reduce using rule 69 (empty -> .)
+    R_PAREN         reduce using rule 69 (empty -> .)
+
+    array                          shift and go to state 44
+    empty                          shift and go to state 46
+
+state 15
+
+    (12) FUNC -> FUNCTION TIPO . ID L_PAREN PARMS R_PAREN VARS BLOQUE
+
+    ID              shift and go to state 47
+
+
+state 16
+
+    (9) TIPO -> INT .
+
+    ID              reduce using rule 9 (TIPO -> INT .)
+    SEMICOLON       reduce using rule 9 (TIPO -> INT .)
+
+
+state 17
+
+    (10) TIPO -> FLOAT .
+
+    ID              reduce using rule 10 (TIPO -> FLOAT .)
+    SEMICOLON       reduce using rule 10 (TIPO -> FLOAT .)
+
+
+state 18
+
+    (11) TIPO -> CHAR .
+
+    ID              reduce using rule 11 (TIPO -> CHAR .)
+    SEMICOLON       reduce using rule 11 (TIPO -> CHAR .)
+
+
+state 19
+
+    (1) PROGRAMA -> PROGRAM ID SEMICOLON VARS FUNC BLOQUE .
+
+    $end            reduce using rule 1 (PROGRAMA -> PROGRAM ID SEMICOLON VARS FUNC BLOQUE .)
+
+
+state 20
+
+    (15) BLOQUE -> L_BRACE ESTATUTO_rep . R_BRACE
+    (16) ESTATUTO_rep -> ESTATUTO_rep . ESTATUTO
+    (18) ESTATUTO -> . ASIGNACION
+    (19) ESTATUTO -> . CONDICION
+    (20) ESTATUTO -> . ESCRITURA
+    (21) ESTATUTO -> . LLAMADA
+    (22) ESTATUTO -> . RETORNO
+    (23) ESTATUTO -> . LECTURA
+    (24) ESTATUTO -> . REPETICION
+    (25) ASIGNACION -> . ID array EQUAL EXPRESION SEMICOLON
+    (42) CONDICION -> . IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux
+    (37) ESCRITURA -> . WRITE L_PAREN escritura_rep R_PAREN SEMICOLON
+    (26) LLAMADA -> . FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON
+    (27) LLAMADA -> . ID L_PAREN exp_rep R_PAREN SEMICOLON
+    (35) RETORNO -> . RETURN L_PAREN EXPRESION R_PAREN SEMICOLON
+    (36) LECTURA -> . READ L_PAREN id_list R_PAREN SEMICOLON
+    (45) REPETICION -> . WHILE L_PAREN EXPRESION R_PAREN BLOQUE
+    (46) REPETICION -> . FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE
+    (30) FUNC_ESPECIAL -> . MEDIA
+    (31) FUNC_ESPECIAL -> . MODA
+    (32) FUNC_ESPECIAL -> . VARIANZA
+    (33) FUNC_ESPECIAL -> . REG
+    (34) FUNC_ESPECIAL -> . PLOTXY
+
+    R_BRACE         shift and go to state 48
+    ID              shift and go to state 29
+    IF              shift and go to state 30
+    WRITE           shift and go to state 31
+    RETURN          shift and go to state 33
+    READ            shift and go to state 34
+    WHILE           shift and go to state 35
+    FOR             shift and go to state 36
+    MEDIA           shift and go to state 37
+    MODA            shift and go to state 38
+    VARIANZA        shift and go to state 39
+    REG             shift and go to state 40
+    PLOTXY          shift and go to state 41
+
+    ESTATUTO                       shift and go to state 49
+    ASIGNACION                     shift and go to state 22
+    CONDICION                      shift and go to state 23
+    ESCRITURA                      shift and go to state 24
+    LLAMADA                        shift and go to state 25
+    RETORNO                        shift and go to state 26
+    LECTURA                        shift and go to state 27
+    REPETICION                     shift and go to state 28
+    FUNC_ESPECIAL                  shift and go to state 32
+
+state 21
+
+    (17) ESTATUTO_rep -> ESTATUTO .
+
+    R_BRACE         reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    ID              reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    IF              reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    WRITE           reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    RETURN          reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    READ            reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    WHILE           reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    FOR             reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    MEDIA           reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    MODA            reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    VARIANZA        reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    REG             reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+    PLOTXY          reduce using rule 17 (ESTATUTO_rep -> ESTATUTO .)
+
+
+state 22
+
+    (18) ESTATUTO -> ASIGNACION .
+
+    R_BRACE         reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    ID              reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    IF              reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    WRITE           reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    RETURN          reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    READ            reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    WHILE           reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    FOR             reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    MEDIA           reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    MODA            reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    VARIANZA        reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    REG             reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+    PLOTXY          reduce using rule 18 (ESTATUTO -> ASIGNACION .)
+
+
+state 23
+
+    (19) ESTATUTO -> CONDICION .
+
+    R_BRACE         reduce using rule 19 (ESTATUTO -> CONDICION .)
+    ID              reduce using rule 19 (ESTATUTO -> CONDICION .)
+    IF              reduce using rule 19 (ESTATUTO -> CONDICION .)
+    WRITE           reduce using rule 19 (ESTATUTO -> CONDICION .)
+    RETURN          reduce using rule 19 (ESTATUTO -> CONDICION .)
+    READ            reduce using rule 19 (ESTATUTO -> CONDICION .)
+    WHILE           reduce using rule 19 (ESTATUTO -> CONDICION .)
+    FOR             reduce using rule 19 (ESTATUTO -> CONDICION .)
+    MEDIA           reduce using rule 19 (ESTATUTO -> CONDICION .)
+    MODA            reduce using rule 19 (ESTATUTO -> CONDICION .)
+    VARIANZA        reduce using rule 19 (ESTATUTO -> CONDICION .)
+    REG             reduce using rule 19 (ESTATUTO -> CONDICION .)
+    PLOTXY          reduce using rule 19 (ESTATUTO -> CONDICION .)
+
+
+state 24
+
+    (20) ESTATUTO -> ESCRITURA .
+
+    R_BRACE         reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    ID              reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    IF              reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    WRITE           reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    RETURN          reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    READ            reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    WHILE           reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    FOR             reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    MEDIA           reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    MODA            reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    VARIANZA        reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    REG             reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+    PLOTXY          reduce using rule 20 (ESTATUTO -> ESCRITURA .)
+
+
+state 25
+
+    (21) ESTATUTO -> LLAMADA .
+
+    R_BRACE         reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    ID              reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    IF              reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    WRITE           reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    RETURN          reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    READ            reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    WHILE           reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    FOR             reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    MEDIA           reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    MODA            reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    VARIANZA        reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    REG             reduce using rule 21 (ESTATUTO -> LLAMADA .)
+    PLOTXY          reduce using rule 21 (ESTATUTO -> LLAMADA .)
+
+
+state 26
+
+    (22) ESTATUTO -> RETORNO .
+
+    R_BRACE         reduce using rule 22 (ESTATUTO -> RETORNO .)
+    ID              reduce using rule 22 (ESTATUTO -> RETORNO .)
+    IF              reduce using rule 22 (ESTATUTO -> RETORNO .)
+    WRITE           reduce using rule 22 (ESTATUTO -> RETORNO .)
+    RETURN          reduce using rule 22 (ESTATUTO -> RETORNO .)
+    READ            reduce using rule 22 (ESTATUTO -> RETORNO .)
+    WHILE           reduce using rule 22 (ESTATUTO -> RETORNO .)
+    FOR             reduce using rule 22 (ESTATUTO -> RETORNO .)
+    MEDIA           reduce using rule 22 (ESTATUTO -> RETORNO .)
+    MODA            reduce using rule 22 (ESTATUTO -> RETORNO .)
+    VARIANZA        reduce using rule 22 (ESTATUTO -> RETORNO .)
+    REG             reduce using rule 22 (ESTATUTO -> RETORNO .)
+    PLOTXY          reduce using rule 22 (ESTATUTO -> RETORNO .)
+
+
+state 27
+
+    (23) ESTATUTO -> LECTURA .
+
+    R_BRACE         reduce using rule 23 (ESTATUTO -> LECTURA .)
+    ID              reduce using rule 23 (ESTATUTO -> LECTURA .)
+    IF              reduce using rule 23 (ESTATUTO -> LECTURA .)
+    WRITE           reduce using rule 23 (ESTATUTO -> LECTURA .)
+    RETURN          reduce using rule 23 (ESTATUTO -> LECTURA .)
+    READ            reduce using rule 23 (ESTATUTO -> LECTURA .)
+    WHILE           reduce using rule 23 (ESTATUTO -> LECTURA .)
+    FOR             reduce using rule 23 (ESTATUTO -> LECTURA .)
+    MEDIA           reduce using rule 23 (ESTATUTO -> LECTURA .)
+    MODA            reduce using rule 23 (ESTATUTO -> LECTURA .)
+    VARIANZA        reduce using rule 23 (ESTATUTO -> LECTURA .)
+    REG             reduce using rule 23 (ESTATUTO -> LECTURA .)
+    PLOTXY          reduce using rule 23 (ESTATUTO -> LECTURA .)
+
+
+state 28
+
+    (24) ESTATUTO -> REPETICION .
+
+    R_BRACE         reduce using rule 24 (ESTATUTO -> REPETICION .)
+    ID              reduce using rule 24 (ESTATUTO -> REPETICION .)
+    IF              reduce using rule 24 (ESTATUTO -> REPETICION .)
+    WRITE           reduce using rule 24 (ESTATUTO -> REPETICION .)
+    RETURN          reduce using rule 24 (ESTATUTO -> REPETICION .)
+    READ            reduce using rule 24 (ESTATUTO -> REPETICION .)
+    WHILE           reduce using rule 24 (ESTATUTO -> REPETICION .)
+    FOR             reduce using rule 24 (ESTATUTO -> REPETICION .)
+    MEDIA           reduce using rule 24 (ESTATUTO -> REPETICION .)
+    MODA            reduce using rule 24 (ESTATUTO -> REPETICION .)
+    VARIANZA        reduce using rule 24 (ESTATUTO -> REPETICION .)
+    REG             reduce using rule 24 (ESTATUTO -> REPETICION .)
+    PLOTXY          reduce using rule 24 (ESTATUTO -> REPETICION .)
+
+
+state 29
+
+    (25) ASIGNACION -> ID . array EQUAL EXPRESION SEMICOLON
+    (27) LLAMADA -> ID . L_PAREN exp_rep R_PAREN SEMICOLON
+    (7) array -> . L_BRACKET CTE_I R_BRACKET
+    (8) array -> . empty
+    (69) empty -> .
+
+    L_PAREN         shift and go to state 51
+    L_BRACKET       shift and go to state 45
+    EQUAL           reduce using rule 69 (empty -> .)
+
+    array                          shift and go to state 50
+    empty                          shift and go to state 46
+
+state 30
+
+    (42) CONDICION -> IF . L_PAREN EXPRESION R_PAREN BLOQUE else_aux
+
+    L_PAREN         shift and go to state 52
+
+
+state 31
+
+    (37) ESCRITURA -> WRITE . L_PAREN escritura_rep R_PAREN SEMICOLON
+
+    L_PAREN         shift and go to state 53
+
+
+state 32
+
+    (26) LLAMADA -> FUNC_ESPECIAL . L_PAREN exp_rep R_PAREN SEMICOLON
+
+    L_PAREN         shift and go to state 54
+
+
+state 33
+
+    (35) RETORNO -> RETURN . L_PAREN EXPRESION R_PAREN SEMICOLON
+
+    L_PAREN         shift and go to state 55
+
+
+state 34
+
+    (36) LECTURA -> READ . L_PAREN id_list R_PAREN SEMICOLON
+
+    L_PAREN         shift and go to state 56
+
+
+state 35
+
+    (45) REPETICION -> WHILE . L_PAREN EXPRESION R_PAREN BLOQUE
+
+    L_PAREN         shift and go to state 57
+
+
+state 36
+
+    (46) REPETICION -> FOR . ID EQUAL EXPRESION TO EXPRESION DO BLOQUE
+
+    ID              shift and go to state 58
+
+
+state 37
+
+    (30) FUNC_ESPECIAL -> MEDIA .
+
+    L_PAREN         reduce using rule 30 (FUNC_ESPECIAL -> MEDIA .)
+
+
+state 38
+
+    (31) FUNC_ESPECIAL -> MODA .
+
+    L_PAREN         reduce using rule 31 (FUNC_ESPECIAL -> MODA .)
+
+
+state 39
+
+    (32) FUNC_ESPECIAL -> VARIANZA .
+
+    L_PAREN         reduce using rule 32 (FUNC_ESPECIAL -> VARIANZA .)
+
+
+state 40
+
+    (33) FUNC_ESPECIAL -> REG .
+
+    L_PAREN         reduce using rule 33 (FUNC_ESPECIAL -> REG .)
+
+
+state 41
+
+    (34) FUNC_ESPECIAL -> PLOTXY .
+
+    L_PAREN         reduce using rule 34 (FUNC_ESPECIAL -> PLOTXY .)
+
+
+state 42
+
+    (3) VARS -> VAR id_list COLON . TIPO SEMICOLON
+    (9) TIPO -> . INT
+    (10) TIPO -> . FLOAT
+    (11) TIPO -> . CHAR
+
+    INT             shift and go to state 16
+    FLOAT           shift and go to state 17
+    CHAR            shift and go to state 18
+
+    TIPO                           shift and go to state 59
+
+state 43
+
+    (5) id_list -> id_list COMMA . ID array
+
+    ID              shift and go to state 60
+
+
+state 44
+
+    (6) id_list -> ID array .
+
+    COLON           reduce using rule 6 (id_list -> ID array .)
+    COMMA           reduce using rule 6 (id_list -> ID array .)
+    R_PAREN         reduce using rule 6 (id_list -> ID array .)
+
+
+state 45
+
+    (7) array -> L_BRACKET . CTE_I R_BRACKET
+
+    CTE_I           shift and go to state 61
+
+
+state 46
+
+    (8) array -> empty .
+
+    COLON           reduce using rule 8 (array -> empty .)
+    COMMA           reduce using rule 8 (array -> empty .)
+    R_PAREN         reduce using rule 8 (array -> empty .)
+    EQUAL           reduce using rule 8 (array -> empty .)
+
+
+state 47
+
+    (12) FUNC -> FUNCTION TIPO ID . L_PAREN PARMS R_PAREN VARS BLOQUE
+
+    L_PAREN         shift and go to state 62
+
+
+state 48
+
+    (15) BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .
+
+    $end            reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    ELSE            reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    R_BRACE         reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    ID              reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    IF              reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    WRITE           reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    RETURN          reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    READ            reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    WHILE           reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    FOR             reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    MEDIA           reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    MODA            reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    VARIANZA        reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    REG             reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    PLOTXY          reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+    L_BRACE         reduce using rule 15 (BLOQUE -> L_BRACE ESTATUTO_rep R_BRACE .)
+
+
+state 49
+
+    (16) ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .
+
+    R_BRACE         reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    ID              reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    IF              reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    WRITE           reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    RETURN          reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    READ            reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    WHILE           reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    FOR             reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    MEDIA           reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    MODA            reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    VARIANZA        reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    REG             reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+    PLOTXY          reduce using rule 16 (ESTATUTO_rep -> ESTATUTO_rep ESTATUTO .)
+
+
+state 50
+
+    (25) ASIGNACION -> ID array . EQUAL EXPRESION SEMICOLON
+
+    EQUAL           shift and go to state 63
+
+
+state 51
+
+    (27) LLAMADA -> ID L_PAREN . exp_rep R_PAREN SEMICOLON
+    (28) exp_rep -> . exp_rep COMMA EXPRESION
+    (29) exp_rep -> . EXPRESION
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    exp_rep                        shift and go to state 66
+    EXPRESION                      shift and go to state 67
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 52
+
+    (42) CONDICION -> IF L_PAREN . EXPRESION R_PAREN BLOQUE else_aux
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXPRESION                      shift and go to state 78
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 53
+
+    (37) ESCRITURA -> WRITE L_PAREN . escritura_rep R_PAREN SEMICOLON
+    (38) escritura_rep -> . escritura_rep COMMA escritura_aux
+    (39) escritura_rep -> . escritura_aux
+    (40) escritura_aux -> . CTE_S
+    (41) escritura_aux -> . EXPRESION
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    CTE_S           shift and go to state 81
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    escritura_rep                  shift and go to state 79
+    escritura_aux                  shift and go to state 80
+    EXPRESION                      shift and go to state 82
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 54
+
+    (26) LLAMADA -> FUNC_ESPECIAL L_PAREN . exp_rep R_PAREN SEMICOLON
+    (28) exp_rep -> . exp_rep COMMA EXPRESION
+    (29) exp_rep -> . EXPRESION
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    exp_rep                        shift and go to state 83
+    EXPRESION                      shift and go to state 67
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 55
+
+    (35) RETORNO -> RETURN L_PAREN . EXPRESION R_PAREN SEMICOLON
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXPRESION                      shift and go to state 84
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 56
+
+    (36) LECTURA -> READ L_PAREN . id_list R_PAREN SEMICOLON
+    (5) id_list -> . id_list COMMA ID array
+    (6) id_list -> . ID array
+
+    ID              shift and go to state 14
+
+    id_list                        shift and go to state 85
+
+state 57
+
+    (45) REPETICION -> WHILE L_PAREN . EXPRESION R_PAREN BLOQUE
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXPRESION                      shift and go to state 86
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 58
+
+    (46) REPETICION -> FOR ID . EQUAL EXPRESION TO EXPRESION DO BLOQUE
+
+    EQUAL           shift and go to state 87
+
+
+state 59
+
+    (3) VARS -> VAR id_list COLON TIPO . SEMICOLON
+
+    SEMICOLON       shift and go to state 88
+
+
+state 60
+
+    (5) id_list -> id_list COMMA ID . array
+    (7) array -> . L_BRACKET CTE_I R_BRACKET
+    (8) array -> . empty
+    (69) empty -> .
+
+    L_BRACKET       shift and go to state 45
+    COLON           reduce using rule 69 (empty -> .)
+    COMMA           reduce using rule 69 (empty -> .)
+    R_PAREN         reduce using rule 69 (empty -> .)
+
+    array                          shift and go to state 89
+    empty                          shift and go to state 46
+
+state 61
+
+    (7) array -> L_BRACKET CTE_I . R_BRACKET
+
+    R_BRACKET       shift and go to state 90
+
+
+state 62
+
+    (12) FUNC -> FUNCTION TIPO ID L_PAREN . PARMS R_PAREN VARS BLOQUE
+    (13) PARMS -> . TIPO ID id_list
+    (14) PARMS -> . empty
+    (9) TIPO -> . INT
+    (10) TIPO -> . FLOAT
+    (11) TIPO -> . CHAR
+    (69) empty -> .
+
+    INT             shift and go to state 16
+    FLOAT           shift and go to state 17
+    CHAR            shift and go to state 18
+    R_PAREN         reduce using rule 69 (empty -> .)
+
+    TIPO                           shift and go to state 91
+    PARMS                          shift and go to state 92
+    empty                          shift and go to state 93
+
+state 63
+
+    (25) ASIGNACION -> ID array EQUAL . EXPRESION SEMICOLON
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXPRESION                      shift and go to state 94
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 64
+
+    (65) VAR_CTE -> ID .
+
+    MULT            reduce using rule 65 (VAR_CTE -> ID .)
+    DIV             reduce using rule 65 (VAR_CTE -> ID .)
+    PLUS            reduce using rule 65 (VAR_CTE -> ID .)
+    MINUS           reduce using rule 65 (VAR_CTE -> ID .)
+    GT              reduce using rule 65 (VAR_CTE -> ID .)
+    LT              reduce using rule 65 (VAR_CTE -> ID .)
+    EQ              reduce using rule 65 (VAR_CTE -> ID .)
+    LEQ             reduce using rule 65 (VAR_CTE -> ID .)
+    GEQ             reduce using rule 65 (VAR_CTE -> ID .)
+    R_PAREN         reduce using rule 65 (VAR_CTE -> ID .)
+    COMMA           reduce using rule 65 (VAR_CTE -> ID .)
+    SEMICOLON       reduce using rule 65 (VAR_CTE -> ID .)
+    TO              reduce using rule 65 (VAR_CTE -> ID .)
+    DO              reduce using rule 65 (VAR_CTE -> ID .)
+
+
+state 65
+
+    (62) FACTOR -> L_PAREN . EXPRESION R_PAREN
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXPRESION                      shift and go to state 95
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 66
+
+    (27) LLAMADA -> ID L_PAREN exp_rep . R_PAREN SEMICOLON
+    (28) exp_rep -> exp_rep . COMMA EXPRESION
+
+    R_PAREN         shift and go to state 96
+    COMMA           shift and go to state 97
+
+
+state 67
+
+    (29) exp_rep -> EXPRESION .
+
+    R_PAREN         reduce using rule 29 (exp_rep -> EXPRESION .)
+    COMMA           reduce using rule 29 (exp_rep -> EXPRESION .)
+
+
+state 68
+
+    (47) EXPRESION -> EXP .
+    (48) EXPRESION -> EXP . RELOP EXP
+    (49) RELOP -> . GT
+    (50) RELOP -> . LT
+    (51) RELOP -> . EQ
+    (52) RELOP -> . LEQ
+    (53) RELOP -> . GEQ
+
+    R_PAREN         reduce using rule 47 (EXPRESION -> EXP .)
+    COMMA           reduce using rule 47 (EXPRESION -> EXP .)
+    SEMICOLON       reduce using rule 47 (EXPRESION -> EXP .)
+    TO              reduce using rule 47 (EXPRESION -> EXP .)
+    DO              reduce using rule 47 (EXPRESION -> EXP .)
+    GT              shift and go to state 99
+    LT              shift and go to state 100
+    EQ              shift and go to state 101
+    LEQ             shift and go to state 102
+    GEQ             shift and go to state 103
+
+    RELOP                          shift and go to state 98
+
+state 69
+
+    (54) EXP -> TERMINO .
+    (55) EXP -> TERMINO . MASMENOS TERMINO
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+
+    GT              reduce using rule 54 (EXP -> TERMINO .)
+    LT              reduce using rule 54 (EXP -> TERMINO .)
+    EQ              reduce using rule 54 (EXP -> TERMINO .)
+    LEQ             reduce using rule 54 (EXP -> TERMINO .)
+    GEQ             reduce using rule 54 (EXP -> TERMINO .)
+    R_PAREN         reduce using rule 54 (EXP -> TERMINO .)
+    COMMA           reduce using rule 54 (EXP -> TERMINO .)
+    SEMICOLON       reduce using rule 54 (EXP -> TERMINO .)
+    TO              reduce using rule 54 (EXP -> TERMINO .)
+    DO              reduce using rule 54 (EXP -> TERMINO .)
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+
+    MASMENOS                       shift and go to state 104
+
+state 70
+
+    (63) FACTOR -> MASMENOS . VAR_CTE
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    VAR_CTE                        shift and go to state 105
+
+state 71
+
+    (58) TERMINO -> FACTOR .
+    (59) TERMINO -> FACTOR . MULTDIV FACTOR
+    (60) MULTDIV -> . MULT
+    (61) MULTDIV -> . DIV
+
+    PLUS            reduce using rule 58 (TERMINO -> FACTOR .)
+    MINUS           reduce using rule 58 (TERMINO -> FACTOR .)
+    GT              reduce using rule 58 (TERMINO -> FACTOR .)
+    LT              reduce using rule 58 (TERMINO -> FACTOR .)
+    EQ              reduce using rule 58 (TERMINO -> FACTOR .)
+    LEQ             reduce using rule 58 (TERMINO -> FACTOR .)
+    GEQ             reduce using rule 58 (TERMINO -> FACTOR .)
+    R_PAREN         reduce using rule 58 (TERMINO -> FACTOR .)
+    COMMA           reduce using rule 58 (TERMINO -> FACTOR .)
+    SEMICOLON       reduce using rule 58 (TERMINO -> FACTOR .)
+    TO              reduce using rule 58 (TERMINO -> FACTOR .)
+    DO              reduce using rule 58 (TERMINO -> FACTOR .)
+    MULT            shift and go to state 107
+    DIV             shift and go to state 108
+
+    MULTDIV                        shift and go to state 106
+
+state 72
+
+    (64) FACTOR -> VAR_CTE .
+
+    MULT            reduce using rule 64 (FACTOR -> VAR_CTE .)
+    DIV             reduce using rule 64 (FACTOR -> VAR_CTE .)
+    PLUS            reduce using rule 64 (FACTOR -> VAR_CTE .)
+    MINUS           reduce using rule 64 (FACTOR -> VAR_CTE .)
+    GT              reduce using rule 64 (FACTOR -> VAR_CTE .)
+    LT              reduce using rule 64 (FACTOR -> VAR_CTE .)
+    EQ              reduce using rule 64 (FACTOR -> VAR_CTE .)
+    LEQ             reduce using rule 64 (FACTOR -> VAR_CTE .)
+    GEQ             reduce using rule 64 (FACTOR -> VAR_CTE .)
+    R_PAREN         reduce using rule 64 (FACTOR -> VAR_CTE .)
+    COMMA           reduce using rule 64 (FACTOR -> VAR_CTE .)
+    SEMICOLON       reduce using rule 64 (FACTOR -> VAR_CTE .)
+    TO              reduce using rule 64 (FACTOR -> VAR_CTE .)
+    DO              reduce using rule 64 (FACTOR -> VAR_CTE .)
+
+
+state 73
+
+    (56) MASMENOS -> PLUS .
+
+    ID              reduce using rule 56 (MASMENOS -> PLUS .)
+    CTE_I           reduce using rule 56 (MASMENOS -> PLUS .)
+    CTE_F           reduce using rule 56 (MASMENOS -> PLUS .)
+    CTE_CHAR        reduce using rule 56 (MASMENOS -> PLUS .)
+    L_PAREN         reduce using rule 56 (MASMENOS -> PLUS .)
+    PLUS            reduce using rule 56 (MASMENOS -> PLUS .)
+    MINUS           reduce using rule 56 (MASMENOS -> PLUS .)
+
+
+state 74
+
+    (57) MASMENOS -> MINUS .
+
+    ID              reduce using rule 57 (MASMENOS -> MINUS .)
+    CTE_I           reduce using rule 57 (MASMENOS -> MINUS .)
+    CTE_F           reduce using rule 57 (MASMENOS -> MINUS .)
+    CTE_CHAR        reduce using rule 57 (MASMENOS -> MINUS .)
+    L_PAREN         reduce using rule 57 (MASMENOS -> MINUS .)
+    PLUS            reduce using rule 57 (MASMENOS -> MINUS .)
+    MINUS           reduce using rule 57 (MASMENOS -> MINUS .)
+
+
+state 75
+
+    (66) VAR_CTE -> CTE_I .
+
+    MULT            reduce using rule 66 (VAR_CTE -> CTE_I .)
+    DIV             reduce using rule 66 (VAR_CTE -> CTE_I .)
+    PLUS            reduce using rule 66 (VAR_CTE -> CTE_I .)
+    MINUS           reduce using rule 66 (VAR_CTE -> CTE_I .)
+    GT              reduce using rule 66 (VAR_CTE -> CTE_I .)
+    LT              reduce using rule 66 (VAR_CTE -> CTE_I .)
+    EQ              reduce using rule 66 (VAR_CTE -> CTE_I .)
+    LEQ             reduce using rule 66 (VAR_CTE -> CTE_I .)
+    GEQ             reduce using rule 66 (VAR_CTE -> CTE_I .)
+    R_PAREN         reduce using rule 66 (VAR_CTE -> CTE_I .)
+    COMMA           reduce using rule 66 (VAR_CTE -> CTE_I .)
+    SEMICOLON       reduce using rule 66 (VAR_CTE -> CTE_I .)
+    TO              reduce using rule 66 (VAR_CTE -> CTE_I .)
+    DO              reduce using rule 66 (VAR_CTE -> CTE_I .)
+
+
+state 76
+
+    (67) VAR_CTE -> CTE_F .
+
+    MULT            reduce using rule 67 (VAR_CTE -> CTE_F .)
+    DIV             reduce using rule 67 (VAR_CTE -> CTE_F .)
+    PLUS            reduce using rule 67 (VAR_CTE -> CTE_F .)
+    MINUS           reduce using rule 67 (VAR_CTE -> CTE_F .)
+    GT              reduce using rule 67 (VAR_CTE -> CTE_F .)
+    LT              reduce using rule 67 (VAR_CTE -> CTE_F .)
+    EQ              reduce using rule 67 (VAR_CTE -> CTE_F .)
+    LEQ             reduce using rule 67 (VAR_CTE -> CTE_F .)
+    GEQ             reduce using rule 67 (VAR_CTE -> CTE_F .)
+    R_PAREN         reduce using rule 67 (VAR_CTE -> CTE_F .)
+    COMMA           reduce using rule 67 (VAR_CTE -> CTE_F .)
+    SEMICOLON       reduce using rule 67 (VAR_CTE -> CTE_F .)
+    TO              reduce using rule 67 (VAR_CTE -> CTE_F .)
+    DO              reduce using rule 67 (VAR_CTE -> CTE_F .)
+
+
+state 77
+
+    (68) VAR_CTE -> CTE_CHAR .
+
+    MULT            reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    DIV             reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    PLUS            reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    MINUS           reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    GT              reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    LT              reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    EQ              reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    LEQ             reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    GEQ             reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    R_PAREN         reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    COMMA           reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    SEMICOLON       reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    TO              reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+    DO              reduce using rule 68 (VAR_CTE -> CTE_CHAR .)
+
+
+state 78
+
+    (42) CONDICION -> IF L_PAREN EXPRESION . R_PAREN BLOQUE else_aux
+
+    R_PAREN         shift and go to state 109
+
+
+state 79
+
+    (37) ESCRITURA -> WRITE L_PAREN escritura_rep . R_PAREN SEMICOLON
+    (38) escritura_rep -> escritura_rep . COMMA escritura_aux
+
+    R_PAREN         shift and go to state 110
+    COMMA           shift and go to state 111
+
+
+state 80
+
+    (39) escritura_rep -> escritura_aux .
+
+    R_PAREN         reduce using rule 39 (escritura_rep -> escritura_aux .)
+    COMMA           reduce using rule 39 (escritura_rep -> escritura_aux .)
+
+
+state 81
+
+    (40) escritura_aux -> CTE_S .
+
+    R_PAREN         reduce using rule 40 (escritura_aux -> CTE_S .)
+    COMMA           reduce using rule 40 (escritura_aux -> CTE_S .)
+
+
+state 82
+
+    (41) escritura_aux -> EXPRESION .
+
+    R_PAREN         reduce using rule 41 (escritura_aux -> EXPRESION .)
+    COMMA           reduce using rule 41 (escritura_aux -> EXPRESION .)
+
+
+state 83
+
+    (26) LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep . R_PAREN SEMICOLON
+    (28) exp_rep -> exp_rep . COMMA EXPRESION
+
+    R_PAREN         shift and go to state 112
+    COMMA           shift and go to state 97
+
+
+state 84
+
+    (35) RETORNO -> RETURN L_PAREN EXPRESION . R_PAREN SEMICOLON
+
+    R_PAREN         shift and go to state 113
+
+
+state 85
+
+    (36) LECTURA -> READ L_PAREN id_list . R_PAREN SEMICOLON
+    (5) id_list -> id_list . COMMA ID array
+
+    R_PAREN         shift and go to state 114
+    COMMA           shift and go to state 43
+
+
+state 86
+
+    (45) REPETICION -> WHILE L_PAREN EXPRESION . R_PAREN BLOQUE
+
+    R_PAREN         shift and go to state 115
+
+
+state 87
+
+    (46) REPETICION -> FOR ID EQUAL . EXPRESION TO EXPRESION DO BLOQUE
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXPRESION                      shift and go to state 116
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 88
+
+    (3) VARS -> VAR id_list COLON TIPO SEMICOLON .
+
+    FUNCTION        reduce using rule 3 (VARS -> VAR id_list COLON TIPO SEMICOLON .)
+    L_BRACE         reduce using rule 3 (VARS -> VAR id_list COLON TIPO SEMICOLON .)
+
+
+state 89
+
+    (5) id_list -> id_list COMMA ID array .
+
+    COLON           reduce using rule 5 (id_list -> id_list COMMA ID array .)
+    COMMA           reduce using rule 5 (id_list -> id_list COMMA ID array .)
+    R_PAREN         reduce using rule 5 (id_list -> id_list COMMA ID array .)
+
+
+state 90
+
+    (7) array -> L_BRACKET CTE_I R_BRACKET .
+
+    COLON           reduce using rule 7 (array -> L_BRACKET CTE_I R_BRACKET .)
+    COMMA           reduce using rule 7 (array -> L_BRACKET CTE_I R_BRACKET .)
+    R_PAREN         reduce using rule 7 (array -> L_BRACKET CTE_I R_BRACKET .)
+    EQUAL           reduce using rule 7 (array -> L_BRACKET CTE_I R_BRACKET .)
+
+
+state 91
+
+    (13) PARMS -> TIPO . ID id_list
+
+    ID              shift and go to state 117
+
+
+state 92
+
+    (12) FUNC -> FUNCTION TIPO ID L_PAREN PARMS . R_PAREN VARS BLOQUE
+
+    R_PAREN         shift and go to state 118
+
+
+state 93
+
+    (14) PARMS -> empty .
+
+    R_PAREN         reduce using rule 14 (PARMS -> empty .)
+
+
+state 94
+
+    (25) ASIGNACION -> ID array EQUAL EXPRESION . SEMICOLON
+
+    SEMICOLON       shift and go to state 119
+
+
+state 95
+
+    (62) FACTOR -> L_PAREN EXPRESION . R_PAREN
+
+    R_PAREN         shift and go to state 120
+
+
+state 96
+
+    (27) LLAMADA -> ID L_PAREN exp_rep R_PAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 121
+
+
+state 97
+
+    (28) exp_rep -> exp_rep COMMA . EXPRESION
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXPRESION                      shift and go to state 122
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 98
+
+    (48) EXPRESION -> EXP RELOP . EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXP                            shift and go to state 123
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 99
+
+    (49) RELOP -> GT .
+
+    L_PAREN         reduce using rule 49 (RELOP -> GT .)
+    PLUS            reduce using rule 49 (RELOP -> GT .)
+    MINUS           reduce using rule 49 (RELOP -> GT .)
+    ID              reduce using rule 49 (RELOP -> GT .)
+    CTE_I           reduce using rule 49 (RELOP -> GT .)
+    CTE_F           reduce using rule 49 (RELOP -> GT .)
+    CTE_CHAR        reduce using rule 49 (RELOP -> GT .)
+
+
+state 100
+
+    (50) RELOP -> LT .
+
+    L_PAREN         reduce using rule 50 (RELOP -> LT .)
+    PLUS            reduce using rule 50 (RELOP -> LT .)
+    MINUS           reduce using rule 50 (RELOP -> LT .)
+    ID              reduce using rule 50 (RELOP -> LT .)
+    CTE_I           reduce using rule 50 (RELOP -> LT .)
+    CTE_F           reduce using rule 50 (RELOP -> LT .)
+    CTE_CHAR        reduce using rule 50 (RELOP -> LT .)
+
+
+state 101
+
+    (51) RELOP -> EQ .
+
+    L_PAREN         reduce using rule 51 (RELOP -> EQ .)
+    PLUS            reduce using rule 51 (RELOP -> EQ .)
+    MINUS           reduce using rule 51 (RELOP -> EQ .)
+    ID              reduce using rule 51 (RELOP -> EQ .)
+    CTE_I           reduce using rule 51 (RELOP -> EQ .)
+    CTE_F           reduce using rule 51 (RELOP -> EQ .)
+    CTE_CHAR        reduce using rule 51 (RELOP -> EQ .)
+
+
+state 102
+
+    (52) RELOP -> LEQ .
+
+    L_PAREN         reduce using rule 52 (RELOP -> LEQ .)
+    PLUS            reduce using rule 52 (RELOP -> LEQ .)
+    MINUS           reduce using rule 52 (RELOP -> LEQ .)
+    ID              reduce using rule 52 (RELOP -> LEQ .)
+    CTE_I           reduce using rule 52 (RELOP -> LEQ .)
+    CTE_F           reduce using rule 52 (RELOP -> LEQ .)
+    CTE_CHAR        reduce using rule 52 (RELOP -> LEQ .)
+
+
+state 103
+
+    (53) RELOP -> GEQ .
+
+    L_PAREN         reduce using rule 53 (RELOP -> GEQ .)
+    PLUS            reduce using rule 53 (RELOP -> GEQ .)
+    MINUS           reduce using rule 53 (RELOP -> GEQ .)
+    ID              reduce using rule 53 (RELOP -> GEQ .)
+    CTE_I           reduce using rule 53 (RELOP -> GEQ .)
+    CTE_F           reduce using rule 53 (RELOP -> GEQ .)
+    CTE_CHAR        reduce using rule 53 (RELOP -> GEQ .)
+
+
+state 104
+
+    (55) EXP -> TERMINO MASMENOS . TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    TERMINO                        shift and go to state 124
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 105
+
+    (63) FACTOR -> MASMENOS VAR_CTE .
+
+    MULT            reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    DIV             reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    PLUS            reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    MINUS           reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    GT              reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    LT              reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    EQ              reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    LEQ             reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    GEQ             reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    R_PAREN         reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    COMMA           reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    SEMICOLON       reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    TO              reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+    DO              reduce using rule 63 (FACTOR -> MASMENOS VAR_CTE .)
+
+
+state 106
+
+    (59) TERMINO -> FACTOR MULTDIV . FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    FACTOR                         shift and go to state 125
+    MASMENOS                       shift and go to state 70
+    VAR_CTE                        shift and go to state 72
+
+state 107
+
+    (60) MULTDIV -> MULT .
+
+    L_PAREN         reduce using rule 60 (MULTDIV -> MULT .)
+    PLUS            reduce using rule 60 (MULTDIV -> MULT .)
+    MINUS           reduce using rule 60 (MULTDIV -> MULT .)
+    ID              reduce using rule 60 (MULTDIV -> MULT .)
+    CTE_I           reduce using rule 60 (MULTDIV -> MULT .)
+    CTE_F           reduce using rule 60 (MULTDIV -> MULT .)
+    CTE_CHAR        reduce using rule 60 (MULTDIV -> MULT .)
+
+
+state 108
+
+    (61) MULTDIV -> DIV .
+
+    L_PAREN         reduce using rule 61 (MULTDIV -> DIV .)
+    PLUS            reduce using rule 61 (MULTDIV -> DIV .)
+    MINUS           reduce using rule 61 (MULTDIV -> DIV .)
+    ID              reduce using rule 61 (MULTDIV -> DIV .)
+    CTE_I           reduce using rule 61 (MULTDIV -> DIV .)
+    CTE_F           reduce using rule 61 (MULTDIV -> DIV .)
+    CTE_CHAR        reduce using rule 61 (MULTDIV -> DIV .)
+
+
+state 109
+
+    (42) CONDICION -> IF L_PAREN EXPRESION R_PAREN . BLOQUE else_aux
+    (15) BLOQUE -> . L_BRACE ESTATUTO_rep R_BRACE
+
+    L_BRACE         shift and go to state 12
+
+    BLOQUE                         shift and go to state 126
+
+state 110
+
+    (37) ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 127
+
+
+state 111
+
+    (38) escritura_rep -> escritura_rep COMMA . escritura_aux
+    (40) escritura_aux -> . CTE_S
+    (41) escritura_aux -> . EXPRESION
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    CTE_S           shift and go to state 81
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    escritura_aux                  shift and go to state 128
+    EXPRESION                      shift and go to state 82
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 112
+
+    (26) LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 129
+
+
+state 113
+
+    (35) RETORNO -> RETURN L_PAREN EXPRESION R_PAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 130
+
+
+state 114
+
+    (36) LECTURA -> READ L_PAREN id_list R_PAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 131
+
+
+state 115
+
+    (45) REPETICION -> WHILE L_PAREN EXPRESION R_PAREN . BLOQUE
+    (15) BLOQUE -> . L_BRACE ESTATUTO_rep R_BRACE
+
+    L_BRACE         shift and go to state 12
+
+    BLOQUE                         shift and go to state 132
+
+state 116
+
+    (46) REPETICION -> FOR ID EQUAL EXPRESION . TO EXPRESION DO BLOQUE
+
+    TO              shift and go to state 133
+
+
+state 117
+
+    (13) PARMS -> TIPO ID . id_list
+    (5) id_list -> . id_list COMMA ID array
+    (6) id_list -> . ID array
+
+    ID              shift and go to state 14
+
+    id_list                        shift and go to state 134
+
+state 118
+
+    (12) FUNC -> FUNCTION TIPO ID L_PAREN PARMS R_PAREN . VARS BLOQUE
+    (3) VARS -> . VAR id_list COLON TIPO SEMICOLON
+    (4) VARS -> . empty
+    (69) empty -> .
+
+    VAR             shift and go to state 7
+    L_BRACE         reduce using rule 69 (empty -> .)
+
+    VARS                           shift and go to state 135
+    empty                          shift and go to state 8
+
+state 119
+
+    (25) ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .
+
+    R_BRACE         reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    ID              reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    IF              reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    WRITE           reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    RETURN          reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    READ            reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    WHILE           reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    FOR             reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    MEDIA           reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    MODA            reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    VARIANZA        reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    REG             reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+    PLOTXY          reduce using rule 25 (ASIGNACION -> ID array EQUAL EXPRESION SEMICOLON .)
+
+
+state 120
+
+    (62) FACTOR -> L_PAREN EXPRESION R_PAREN .
+
+    MULT            reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    DIV             reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    PLUS            reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    MINUS           reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    GT              reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    LT              reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    EQ              reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    LEQ             reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    GEQ             reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    R_PAREN         reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    COMMA           reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    SEMICOLON       reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    TO              reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+    DO              reduce using rule 62 (FACTOR -> L_PAREN EXPRESION R_PAREN .)
+
+
+state 121
+
+    (27) LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .
+
+    R_BRACE         reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    ID              reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    IF              reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    WRITE           reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    RETURN          reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    READ            reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    WHILE           reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    FOR             reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    MEDIA           reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    MODA            reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    VARIANZA        reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    REG             reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+    PLOTXY          reduce using rule 27 (LLAMADA -> ID L_PAREN exp_rep R_PAREN SEMICOLON .)
+
+
+state 122
+
+    (28) exp_rep -> exp_rep COMMA EXPRESION .
+
+    R_PAREN         reduce using rule 28 (exp_rep -> exp_rep COMMA EXPRESION .)
+    COMMA           reduce using rule 28 (exp_rep -> exp_rep COMMA EXPRESION .)
+
+
+state 123
+
+    (48) EXPRESION -> EXP RELOP EXP .
+
+    R_PAREN         reduce using rule 48 (EXPRESION -> EXP RELOP EXP .)
+    COMMA           reduce using rule 48 (EXPRESION -> EXP RELOP EXP .)
+    SEMICOLON       reduce using rule 48 (EXPRESION -> EXP RELOP EXP .)
+    TO              reduce using rule 48 (EXPRESION -> EXP RELOP EXP .)
+    DO              reduce using rule 48 (EXPRESION -> EXP RELOP EXP .)
+
+
+state 124
+
+    (55) EXP -> TERMINO MASMENOS TERMINO .
+
+    GT              reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    LT              reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    EQ              reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    LEQ             reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    GEQ             reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    R_PAREN         reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    COMMA           reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    SEMICOLON       reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    TO              reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+    DO              reduce using rule 55 (EXP -> TERMINO MASMENOS TERMINO .)
+
+
+state 125
+
+    (59) TERMINO -> FACTOR MULTDIV FACTOR .
+
+    PLUS            reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    MINUS           reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    GT              reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    LT              reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    EQ              reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    LEQ             reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    GEQ             reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    R_PAREN         reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    COMMA           reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    SEMICOLON       reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    TO              reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+    DO              reduce using rule 59 (TERMINO -> FACTOR MULTDIV FACTOR .)
+
+
+state 126
+
+    (42) CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE . else_aux
+    (43) else_aux -> . ELSE BLOQUE
+    (44) else_aux -> . empty
+    (69) empty -> .
+
+    ELSE            shift and go to state 137
+    R_BRACE         reduce using rule 69 (empty -> .)
+    ID              reduce using rule 69 (empty -> .)
+    IF              reduce using rule 69 (empty -> .)
+    WRITE           reduce using rule 69 (empty -> .)
+    RETURN          reduce using rule 69 (empty -> .)
+    READ            reduce using rule 69 (empty -> .)
+    WHILE           reduce using rule 69 (empty -> .)
+    FOR             reduce using rule 69 (empty -> .)
+    MEDIA           reduce using rule 69 (empty -> .)
+    MODA            reduce using rule 69 (empty -> .)
+    VARIANZA        reduce using rule 69 (empty -> .)
+    REG             reduce using rule 69 (empty -> .)
+    PLOTXY          reduce using rule 69 (empty -> .)
+
+    else_aux                       shift and go to state 136
+    empty                          shift and go to state 138
+
+state 127
+
+    (37) ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .
+
+    R_BRACE         reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    ID              reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    IF              reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    WRITE           reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    RETURN          reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    READ            reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    WHILE           reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    FOR             reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    MEDIA           reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    MODA            reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    VARIANZA        reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    REG             reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+    PLOTXY          reduce using rule 37 (ESCRITURA -> WRITE L_PAREN escritura_rep R_PAREN SEMICOLON .)
+
+
+state 128
+
+    (38) escritura_rep -> escritura_rep COMMA escritura_aux .
+
+    R_PAREN         reduce using rule 38 (escritura_rep -> escritura_rep COMMA escritura_aux .)
+    COMMA           reduce using rule 38 (escritura_rep -> escritura_rep COMMA escritura_aux .)
+
+
+state 129
+
+    (26) LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .
+
+    R_BRACE         reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    ID              reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    IF              reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    WRITE           reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    RETURN          reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    READ            reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    WHILE           reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    FOR             reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    MEDIA           reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    MODA            reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    VARIANZA        reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    REG             reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+    PLOTXY          reduce using rule 26 (LLAMADA -> FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON .)
+
+
+state 130
+
+    (35) RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .
+
+    R_BRACE         reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    ID              reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    IF              reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    WRITE           reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    RETURN          reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    READ            reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    WHILE           reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    FOR             reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    MEDIA           reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    MODA            reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    VARIANZA        reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    REG             reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+    PLOTXY          reduce using rule 35 (RETORNO -> RETURN L_PAREN EXPRESION R_PAREN SEMICOLON .)
+
+
+state 131
+
+    (36) LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .
+
+    R_BRACE         reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    ID              reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    IF              reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    WRITE           reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    RETURN          reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    READ            reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    WHILE           reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    FOR             reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    MEDIA           reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    MODA            reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    VARIANZA        reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    REG             reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+    PLOTXY          reduce using rule 36 (LECTURA -> READ L_PAREN id_list R_PAREN SEMICOLON .)
+
+
+state 132
+
+    (45) REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .
+
+    R_BRACE         reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    ID              reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    IF              reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    WRITE           reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    RETURN          reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    READ            reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    WHILE           reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    FOR             reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    MEDIA           reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    MODA            reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    VARIANZA        reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    REG             reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+    PLOTXY          reduce using rule 45 (REPETICION -> WHILE L_PAREN EXPRESION R_PAREN BLOQUE .)
+
+
+state 133
+
+    (46) REPETICION -> FOR ID EQUAL EXPRESION TO . EXPRESION DO BLOQUE
+    (47) EXPRESION -> . EXP
+    (48) EXPRESION -> . EXP RELOP EXP
+    (54) EXP -> . TERMINO
+    (55) EXP -> . TERMINO MASMENOS TERMINO
+    (58) TERMINO -> . FACTOR
+    (59) TERMINO -> . FACTOR MULTDIV FACTOR
+    (62) FACTOR -> . L_PAREN EXPRESION R_PAREN
+    (63) FACTOR -> . MASMENOS VAR_CTE
+    (64) FACTOR -> . VAR_CTE
+    (56) MASMENOS -> . PLUS
+    (57) MASMENOS -> . MINUS
+    (65) VAR_CTE -> . ID
+    (66) VAR_CTE -> . CTE_I
+    (67) VAR_CTE -> . CTE_F
+    (68) VAR_CTE -> . CTE_CHAR
+
+    L_PAREN         shift and go to state 65
+    PLUS            shift and go to state 73
+    MINUS           shift and go to state 74
+    ID              shift and go to state 64
+    CTE_I           shift and go to state 75
+    CTE_F           shift and go to state 76
+    CTE_CHAR        shift and go to state 77
+
+    EXPRESION                      shift and go to state 139
+    EXP                            shift and go to state 68
+    TERMINO                        shift and go to state 69
+    MASMENOS                       shift and go to state 70
+    FACTOR                         shift and go to state 71
+    VAR_CTE                        shift and go to state 72
+
+state 134
+
+    (13) PARMS -> TIPO ID id_list .
+    (5) id_list -> id_list . COMMA ID array
+
+    R_PAREN         reduce using rule 13 (PARMS -> TIPO ID id_list .)
+    COMMA           shift and go to state 43
+
+
+state 135
+
+    (12) FUNC -> FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS . BLOQUE
+    (15) BLOQUE -> . L_BRACE ESTATUTO_rep R_BRACE
+
+    L_BRACE         shift and go to state 12
+
+    BLOQUE                         shift and go to state 140
+
+state 136
+
+    (42) CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .
+
+    R_BRACE         reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    ID              reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    IF              reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    WRITE           reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    RETURN          reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    READ            reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    WHILE           reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    FOR             reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    MEDIA           reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    MODA            reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    VARIANZA        reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    REG             reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+    PLOTXY          reduce using rule 42 (CONDICION -> IF L_PAREN EXPRESION R_PAREN BLOQUE else_aux .)
+
+
+state 137
+
+    (43) else_aux -> ELSE . BLOQUE
+    (15) BLOQUE -> . L_BRACE ESTATUTO_rep R_BRACE
+
+    L_BRACE         shift and go to state 12
+
+    BLOQUE                         shift and go to state 141
+
+state 138
+
+    (44) else_aux -> empty .
+
+    R_BRACE         reduce using rule 44 (else_aux -> empty .)
+    ID              reduce using rule 44 (else_aux -> empty .)
+    IF              reduce using rule 44 (else_aux -> empty .)
+    WRITE           reduce using rule 44 (else_aux -> empty .)
+    RETURN          reduce using rule 44 (else_aux -> empty .)
+    READ            reduce using rule 44 (else_aux -> empty .)
+    WHILE           reduce using rule 44 (else_aux -> empty .)
+    FOR             reduce using rule 44 (else_aux -> empty .)
+    MEDIA           reduce using rule 44 (else_aux -> empty .)
+    MODA            reduce using rule 44 (else_aux -> empty .)
+    VARIANZA        reduce using rule 44 (else_aux -> empty .)
+    REG             reduce using rule 44 (else_aux -> empty .)
+    PLOTXY          reduce using rule 44 (else_aux -> empty .)
+
+
+state 139
+
+    (46) REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION . DO BLOQUE
+
+    DO              shift and go to state 142
+
+
+state 140
+
+    (12) FUNC -> FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE .
+
+    L_BRACE         reduce using rule 12 (FUNC -> FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE .)
+
+
+state 141
+
+    (43) else_aux -> ELSE BLOQUE .
+
+    R_BRACE         reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    ID              reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    IF              reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    WRITE           reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    RETURN          reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    READ            reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    WHILE           reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    FOR             reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    MEDIA           reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    MODA            reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    VARIANZA        reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    REG             reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+    PLOTXY          reduce using rule 43 (else_aux -> ELSE BLOQUE .)
+
+
+state 142
+
+    (46) REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO . BLOQUE
+    (15) BLOQUE -> . L_BRACE ESTATUTO_rep R_BRACE
+
+    L_BRACE         shift and go to state 12
+
+    BLOQUE                         shift and go to state 143
+
+state 143
+
+    (46) REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .
+
+    R_BRACE         reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    ID              reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    IF              reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    WRITE           reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    RETURN          reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    READ            reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    WHILE           reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    FOR             reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    MEDIA           reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    MODA            reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    VARIANZA        reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    REG             reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+    PLOTXY          reduce using rule 46 (REPETICION -> FOR ID EQUAL EXPRESION TO EXPRESION DO BLOQUE .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for FUNCTION in state 4 resolved as shift

@@ -1,0 +1,8 @@
+program myProgram;
+var x:int;
+function int myFunc() {
+  return(5);
+}
+{
+  x = 5;
+}

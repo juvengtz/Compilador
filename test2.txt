@@ -1,0 +1,11 @@
+program simpleTest;
+var a, b:int;
+
+function int multiply() {
+  return(6);
+}
+
+{
+  a = 2;
+  b = 3;
+}
