@@ -1,14 +1,16 @@
 import ply.yacc as yacc
 from Lexer import tokens, lexer
+from Cubo_Semantico import *
+from Cuadruplo import *
 
 
 def p_programa(p):
-    '''PROGRAMA : PROGRAM ID SEMICOLON VARS FUNC BLOQUE
-                | PROGRAM ID SEMICOLON FUNC BLOQUE'''
+    '''PROGRAMA : PROGRAM create_dirfunc ID SEMICOLON VARS FUNC BLOQUE
+                | PROGRAM create_dirfunc ID SEMICOLON FUNC BLOQUE'''
 
 
 def p_vars(p):
-    '''VARS : VAR id_list COLON TIPO SEMICOLON
+    '''VARS : VAR addvar id_list COLON TIPO SEMICOLON
             | empty'''
 
 
@@ -23,13 +25,13 @@ def p_array(p):
 
 
 def p_tipo(p):
-    '''TIPO : INT
-            | FLOAT
-            | CHAR'''
+    '''TIPO : INT current_type
+            | FLOAT current_type
+            | CHAR current_type'''
 
 
 def p_func(p):
-    '''FUNC : FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE'''
+    '''FUNC : FUNCTION TIPO ID addfunc L_PAREN PARMS R_PAREN VARS BLOQUE'''
 
 
 def p_parms(p):
@@ -120,11 +122,11 @@ def p_expresion(p):
 
 
 def p_relop(p):
-    '''RELOP : GT
-             | LT
-             | EQ
-             | LEQ
-             | GEQ'''
+    '''RELOP : GT stack_operator
+             | LT stack_operator
+             | EQ stack_operator
+             | LEQ stack_operator
+             | GEQ stack_operator'''
 
 
 def p_exp(p):
@@ -133,8 +135,8 @@ def p_exp(p):
 
 
 def p_masmenos(p):
-    '''MASMENOS : PLUS
-                | MINUS'''
+    '''MASMENOS : PLUS stack_operator
+                | MINUS stack_operator'''
 
 
 def p_termino(p):
@@ -143,21 +145,21 @@ def p_termino(p):
 
 
 def p_multdiv(p):
-    '''MULTDIV : MULT
-               | DIV'''
+    '''MULTDIV : MULT stack_operator
+               | DIV stack_operator'''
 
 
 def p_factor(p):
-    '''FACTOR : L_PAREN EXPRESION R_PAREN
+    '''FACTOR : L_PAREN stack_operator EXPRESION R_PAREN stack_operator
               | MASMENOS VAR_CTE
               | VAR_CTE'''
 
 
 def p_var_cte(p):
-    '''VAR_CTE : ID
-               | CTE_I
-               | CTE_F
-               | CTE_CHAR'''
+    '''VAR_CTE : ID stack_operand_id
+               | CTE_I stack_operand_int
+               | CTE_F stack_operand_float
+               | CTE_CHAR stack_operand_char'''
 
 
 def p_empty(p):
@@ -167,6 +169,99 @@ def p_empty(p):
 
 def p_error(p):
     print("Syntax error at '%s'" % p.value)
+# GLOBAL VARIABLES
+
+
+Operands_Stack = []
+Operators_Stack = []
+Types = []
+
+JumpStack = []
+
+Quadruples = []
+Constants = []
+
+
+CurrentFunc = None
+CurrentType = None
+CurrentID = None
+
+dirFunc = {}
+
+# Semantics
+
+
+def p_create_dirfunc(p):
+    'create_dirfunc :'
+    global CurrentFunc, CurrentType
+    if CurrentFunc in dirFunc:
+        print('Function already declared')
+    else:
+        dirFunc[CurrentFunc] = {'type': CurrentType,
+                                'vars': {}, 'dir': None, 'size': 0}
+
+
+def p_current_type(p):
+    'current_type :'
+    global CurrentType
+    CurrentType = p[-1]
+
+
+def p_addvar(p):
+    'addvar :'
+    global CurrentFunc, CurrentType, CurrentID
+    if CurrentID in dirFunc[CurrentFunc]['vars']:
+        print('Variable already declared')
+    else:
+        dirFunc[CurrentFunc]['vars'][CurrentID] = {
+            'name': CurrentID, 'type': CurrentType, 'dir': None, 'size': 0}
+
+
+def p_addfunc(p):
+    'addfunc :'
+    global CurrentFunc, CurrentType
+    if CurrentFunc in dirFunc:
+        print('Function already declared')
+    else:
+        dirFunc[CurrentFunc] = {'type': CurrentType,
+                                'vars': {}, 'dir': None, 'size': 0}
+
+
+def p_stack_operand_id(p):
+    'stack_operand_id :'
+    global Operands_Stack, CurrentFunc, CurrentID
+    if CurrentID in dirFunc[CurrentFunc]['vars']:
+        Operands_Stack.append(dirFunc[CurrentFunc]['vars'][CurrentID]['dir'])
+        Types.append(dirFunc[CurrentFunc]['vars'][CurrentID]['type'])
+    else:
+        print('Variable not declared')
+
+
+def p_stack_operand_int(p):
+    'stack_operand_int :'
+    global Operands_Stack, Constants
+    Operands_Stack.append(Constants[p[-1]])
+    Types.append('int')
+
+
+def p_stack_operand_float(p):
+    'stack_operand_float :'
+    global Operands_Stack, Constants
+    Operands_Stack.append(Constants[p[-1]])
+    Types.append('float')
+
+
+def p_stack_operand_char(p):
+    'stack_operand_char :'
+    global Operands_Stack, Constants
+    Operands_Stack.append(Constants[p[-1]])
+    Types.append('char')
+
+
+def p_stack_operator(p):
+    'stack_operator :'
+    global Operators_Stack
+    Operators_Stack.append(p[-1])
 
 
 parser = yacc.yacc()
