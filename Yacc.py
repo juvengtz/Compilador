@@ -31,7 +31,7 @@ def p_tipo(p):
 
 
 def p_func(p):
-    '''FUNC : FUNCTION TIPO ID addfunc L_PAREN PARMS R_PAREN VARS BLOQUE'''
+    '''FUNC : FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE'''
 
 
 def p_parms(p):
@@ -59,12 +59,12 @@ def p_estatuto(p):
 
 
 def p_asignacion(p):
-    '''ASIGNACION : ID array EQUAL EXPRESION SEMICOLON'''
+    '''ASIGNACION : ID array EQUAL EXPRESION np_asignacion SEMICOLON'''
 
 
 def p_llamada(p):
     '''LLAMADA : FUNC_ESPECIAL L_PAREN exp_rep R_PAREN SEMICOLON
-               | ID L_PAREN exp_rep R_PAREN SEMICOLON'''
+               | ID L_PAREN exp_rep R_PAREN np_llamada SEMICOLON'''
 
 
 def p_exp_rep(p):
@@ -217,16 +217,6 @@ def p_addvar(p):
             'name': CurrentID, 'type': CurrentType, 'dir': None, 'size': 0}
 
 
-def p_addfunc(p):
-    'addfunc :'
-    global CurrentFunc, CurrentType
-    if CurrentFunc in dirFunc:
-        print('Function already declared')
-    else:
-        dirFunc[CurrentFunc] = {'type': CurrentType,
-                                'vars': {}, 'dir': None, 'size': 0}
-
-
 def p_stack_operand_id(p):
     'stack_operand_id :'
     global Operands_Stack, CurrentFunc, CurrentID
@@ -264,6 +254,64 @@ def p_stack_operator(p):
     Operators_Stack.append(p[-1])
 
 
+def p_np_llamada(p):
+    'np_llamada :'
+    global Operands_Stack, Operators_Stack, Quadruples, CurrentFunc, dirFunc
+    if p[-1] in dirFunc:
+        if dirFunc[p[-1]]['type'] != 'void':
+            print('Function has to return a value')
+        else:
+            Quadruples.append(['ERA', p[-1], None, None])
+            Quadruples.append(['GOSUB', p[-1], None, None])
+            Quadruples.append(['ENDPROC', None, None, None])
+    else:
+        print('Function not declared')
+
+
+def p_np_asignacion(p):
+    'np_asignacion :'
+    global Operands_Stack, Operators_Stack, Quadruples, Types
+    if Operators_Stack[-1] == '=':
+        Operators_Stack.pop()
+        right_operand = Operands_Stack.pop()
+        right_type = Types.pop()
+        left_operand = Operands_Stack.pop()
+        left_type = Types.pop()
+        result_type = CuboSemantico[left_type][right_type]['=']
+        if result_type != 'error':
+            Quadruples.append(['=', right_operand, None, left_operand])
+        else:
+            print('Type mismatch')
+    else:
+        print('Operator mismatch')
+
+
+def p_np_condicion(p):
+    'np_condicion :'
+    global Operands_Stack, Operators_Stack, Quadruples, JumpStack
+    if Operators_Stack[-1] == '==':
+        Operators_Stack.pop()
+        right_operand = Operands_Stack.pop()
+        right_type = Types.pop()
+        left_operand = Operands_Stack.pop()
+        left_type = Types.pop()
+        result_type = CuboSemantico[left_type][right_type]['==']
+        if result_type != 'error':
+            Quadruples.append(['GOTOF', left_operand, None, None])
+            JumpStack.append(len(Quadruples)-1)
+        else:
+            print('Type mismatch')
+
+
+def p_np_condicion2(p):
+    'np_condicion2 :'
+    global Operands_Stack, Operators_Stack, Quadruples, JumpStack
+    Quadruples.append(['GOTO', None, None, None])
+    false = JumpStack.pop()
+    JumpStack.append(len(Quadruples)-1)
+    Quadruples[false][3] = len(Quadruples)
+
+
 parser = yacc.yacc()
 
 
@@ -271,3 +319,6 @@ if __name__ == "__main__":
     data = input('file name:')
     with open(data, 'r') as data:
         parser.parse(data.read())
+        print(dirFunc)
+        print(Quadruples)
+        print(Constants)
