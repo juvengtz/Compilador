@@ -253,6 +253,47 @@ def p_stack_operator(p):
     global Operators_Stack
     Operators_Stack.append(p[-1])
 
+def p_checkterm(p):
+    'checkterm :'
+    global Operators_Stack
+    if Operators_Stack[-1] == '*' or Operators_Stack[-1] == '/':
+        right_operand = Operands_Stack.pop()
+        right_type = Types.pop()
+        left_operand = Operands_Stack.pop()
+        left_type = Types.pop()
+        operator = Operators_Stack.pop()
+        result_type = CuboSemantico[left_type][right_type][operator]
+        if result_type != 'error':
+            result = 'temp' + str(len(Constants))
+            Constants.append(result_type)
+            Operands_Stack.append(result)
+            Types.append(result_type)
+            Quadruples.append([operator, left_operand,
+                               right_operand, result])
+        else:
+            print('Type mismatch')
+        
+
+def p_checkexp(p):
+    'checkexp :'
+    global Operators_Stack
+    if Operators_Stack[-1] == '+' or Operators_Stack[-1] == '-':
+        right_operand = Operands_Stack.pop()
+        right_type = Types.pop()
+        left_operand = Operands_Stack.pop()
+        left_type = Types.pop()
+        operator = Operators_Stack.pop()
+        result_type = CuboSemantico[left_type][right_type][operator]
+        if result_type != 'error':
+            result = 'temp' + str(len(Constants))
+            Constants.append(result_type)
+            Operands_Stack.append(result)
+            Types.append(result_type)
+            Quadruples.append([operator, left_operand,
+                               right_operand, result])
+        else:
+            print('Type mismatch')
+
 
 def p_np_llamada(p):
     'np_llamada :'
