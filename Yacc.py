@@ -294,6 +294,32 @@ def p_checkexp(p):
         else:
             print('Type mismatch')
 
+def p_checkparentesis(p):
+    'checkparentesis :'
+    global Operators_Stack
+    if Operators_Stack[-1] == '(':
+        Operators_Stack.pop()
+
+def p_checkrelop(p):
+    'checkrelop :'
+    global Operators_Stack
+    if Operators_Stack[-1] == '<' or Operators_Stack[-1] == '>' or Operators_Stack[-1] == '<=' or Operators_Stack[-1] == '>=' or Operators_Stack[-1] == '==':
+        right_operand = Operands_Stack.pop()
+        right_type = Types.pop()
+        left_operand = Operands_Stack.pop()
+        left_type = Types.pop()
+        operator = Operators_Stack.pop()
+        result_type = CuboSemantico[left_type][right_type][operator]
+        if result_type != 'error':
+            result = 'temp' + str(len(Constants))
+            Constants.append(result_type)
+            Operands_Stack.append(result)
+            Types.append(result_type)
+            Quadruples.append([operator, left_operand,
+                               right_operand, result])
+        else:
+            print('Type mismatch')
+
 
 def p_np_llamada(p):
     'np_llamada :'
@@ -327,31 +353,36 @@ def p_np_asignacion(p):
         print('Operator mismatch')
 
 
-def p_np_condicion(p):
-    'np_condicion :'
+def p_GotoF(p):
+    'GotoF :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
-    if Operators_Stack[-1] == '==':
+    if Operators_Stack[-1] == 'GotoF':
         Operators_Stack.pop()
-        right_operand = Operands_Stack.pop()
-        right_type = Types.pop()
-        left_operand = Operands_Stack.pop()
-        left_type = Types.pop()
-        result_type = CuboSemantico[left_type][right_type]['==']
-        if result_type != 'error':
-            Quadruples.append(['GOTOF', left_operand, None, None])
-            JumpStack.append(len(Quadruples)-1)
-        else:
-            print('Type mismatch')
+        result = Operands_Stack.pop()
+        Quadruples.append(['GotoF', result, None, None])
+        JumpStack.append(len(Quadruples) - 1)
+    else:
+        print('Operator mismatch')
 
-
-def p_np_condicion2(p):
-    'np_condicion2 :'
+def p_Goto(p):
+    'Goto :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
-    Quadruples.append(['GOTO', None, None, None])
-    false = JumpStack.pop()
-    JumpStack.append(len(Quadruples)-1)
-    Quadruples[false][3] = len(Quadruples)
+    if Operators_Stack[-1] == 'Goto':
+        Operators_Stack.pop()
+        Quadruples.append(['Goto', None, None, None])
+        JumpStack.append(len(Quadruples) - 1)
+    else:
+        print('Operator mismatch')
 
+def p_endProc(p):
+    'endProc :'
+    global Operands_Stack, Operators_Stack, Quadruples, JumpStack
+    if Operators_Stack[-1] == 'endProc':
+        Operators_Stack.pop()
+        Quadruples.append(['ENDPROC', None, None, None])
+        Quadruples[JumpStack.pop()][3] = len(Quadruples)
+    else:
+        print('Operator mismatch')
 
 parser = yacc.yacc()
 
