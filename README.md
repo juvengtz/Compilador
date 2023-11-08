@@ -1,6 +1,6 @@
-### AvanceActual: 6
+# AvanceActual: 6
 
-# Avances Completados: 3
+## Avances Completados: 3
 
 ### Estado de Proyecto:
 
