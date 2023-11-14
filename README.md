@@ -1,11 +1,12 @@
-# AvanceActual: 6
+# AvanceActual: 7
 
-## Avances Completados: 3
+## Avances Completados: 4
 
 ### Estado de Proyecto:
 
-Actualmente estoy trabajando en el avance 4 en la semantica condicional
-Cuadruplos no estan listos
+Tuve que hacer unas correcciones en la gramatica
+Se agregaron mas puntos neuralgicos en la semantica
+y ya estan definidas las direcciones
 
 ## Avance 1
 
