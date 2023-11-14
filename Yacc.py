@@ -5,12 +5,12 @@ from Cuadruplo import *
 
 
 def p_programa(p):
-    '''PROGRAMA : PROGRAM create_dirfunc ID SEMICOLON VARS FUNC BLOQUE
-                | PROGRAM create_dirfunc ID SEMICOLON FUNC BLOQUE'''
+    '''PROGRAMA : PROGRAM ID create_dirfunc SEMICOLON VARS FUNC BLOQUE
+                | PROGRAM ID create_dirfunc SEMICOLON FUNC BLOQUE'''
 
 
 def p_vars(p):
-    '''VARS : VAR addvar id_list COLON TIPO SEMICOLON
+    '''VARS : VAR addvar TIPO COLON id_list SEMICOLON
             | empty'''
 
 
@@ -31,7 +31,14 @@ def p_tipo(p):
 
 
 def p_func(p):
-    '''FUNC : FUNCTION TIPO ID L_PAREN PARMS R_PAREN VARS BLOQUE'''
+    '''FUNC : FUNCTION TIPO_FUNC ID L_PAREN PARMS R_PAREN VARS BLOQUE'''
+
+
+def p_tipo_func(p):
+    '''TIPO_FUNC : INT
+                 | FLOAT
+                 | CHAR
+                 | VOID'''
 
 
 def p_parms(p):
