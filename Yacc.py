@@ -188,6 +188,24 @@ CurrentID = None
 
 dirFunc = {}
 
+# Directions
+global_int = 1000
+global_float = 2000
+global_char = 3000
+global_bool = 4000
+local_int = 5000
+local_float = 6000
+local_char = 7000
+local_bool = 8000
+const_int = 9000
+const_float = 10000
+const_char = 11000
+const_bool = 12000
+temp_int = 13000
+temp_float = 14000
+temp_char = 15000
+temp_bool = 16000
+
 # Semantics
 
 
