@@ -1,8 +1,9 @@
-program myProgram;
-var x:int;
-function int myFunc() {
-  return(5);
-}
-{
-  x = 5;
+program test1;
+var
+  float: a,b,c,k;
+
+
+function void multiply() {
+  var float: f,l;
+  c=l+(a+k*b)*s;
 }
