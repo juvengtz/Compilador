@@ -1,12 +1,12 @@
 # AvanceActual: 7
 
-## Avances Completados: 4
+## Avances Completados: 5
 
 ### Estado de Proyecto:
 
 Tuve que hacer unas correcciones en la gramatica
 Se agregaron mas puntos neuralgicos en la semantica
-y ya estan definidas las direcciones
+para la Generacion de Codigo de Estatutos Condicionales
 
 ## Avance 1
 

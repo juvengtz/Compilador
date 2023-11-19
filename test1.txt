@@ -1,9 +1,12 @@
 program test1;
-var
-  float: a,b,c,k;
+var int : a, b;
+var bool : c;
 
 
-function void multiply() {
-  var float: f,l;
-  c=l+(a+k*b)*s;
+
+function void add()
+ {
+  a = 1;
+  b = 2;
+  c = a > b;
 }
