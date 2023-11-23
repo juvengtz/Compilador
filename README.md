@@ -1,12 +1,13 @@
-# AvanceActual: 7
+# AvanceActual: 8
 
 ## Avances Completados: 5
 
 ### Estado de Proyecto:
 
-Tuve que hacer unas correcciones en la gramatica
 Se agregaron mas puntos neuralgicos en la semantica
 para la Generacion de Codigo de Estatutos Condicionales
+Actualmente trabajando en la generacion de de Codigo de
+funciones para hacer la maquina virual despues
 
 ## Avance 1
 

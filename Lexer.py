@@ -6,6 +6,7 @@ tokens = [
     'GT', 'LT', 'EQ', 'LEQ', 'GEQ', 'COLON',
     'SEMICOLON', 'COMMA', 'L_PAREN', 'R_PAREN',
     'L_BRACKET', 'R_BRACKET', 'L_BRACE', 'R_BRACE',
+    'AND', 'OR'
 ]
 
 reserved = {
@@ -16,11 +17,13 @@ reserved = {
     'char': 'CHAR',
     'bool': 'BOOL',
     'void' : 'VOID',
+    'main': 'MAIN',
     'function': 'FUNCTION',
     'return': 'RETURN',
     'read': 'READ',
     'write': 'WRITE',
     'if': 'IF',
+    'then': 'THEN',
     'else': 'ELSE',
     'while': 'WHILE',
     'for': 'FOR',
@@ -54,6 +57,8 @@ t_L_BRACKET = r'\['
 t_R_BRACKET = r'\]'
 t_L_BRACE = r'\{'
 t_R_BRACE = r'\}'
+t_AND = r'&'
+t_OR = r'\|'
 t_ignore = ' \t'
 
 

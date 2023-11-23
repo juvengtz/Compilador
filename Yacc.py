@@ -6,7 +6,7 @@ from Cuadruplo import *
 
 
 def p_programa(p):
-    '''PROGRAMA : PROGRAM create_dirfunc ID  SEMICOLON vars2 func2 bloque'''
+    '''PROGRAMA : PROGRAM create_dirfunc ID  SEMICOLON vars2 func2 principal'''
 
 
 def p_vars(p):
@@ -35,7 +35,7 @@ def p_tipo(p):
 
 
 def p_func(p):
-    '''func : FUNCTION tipo_func ID addfunc L_PAREN parms R_PAREN vars2 bloque endProc'''
+    '''func : FUNCTION tipo_func ID addfunc L_PAREN params R_PAREN vars2 L_BRACE funcJump estatuto_rep R_BRACE endFunc'''
 
 def p_func2(p):
     '''func2 : func func2
@@ -49,18 +49,25 @@ def p_tipo_func(p):
                  | VOID current_type'''
 
 
-def p_parms(p):
-    '''parms : tipo ID id_list
+def p_params(p):
+    '''params : tipo ID addvar updateParams params2
              | empty'''
+    
+def p_params2(p):
+    '''params2 : COMMA tipo ID addvar updateParams params2
+            | empty'''
 
+
+def p_principal(p):
+    '''principal : MAIN start funcChange L_PAREN R_PAREN bloque endProc'''
 
 def p_bloque(p):
     '''bloque : L_BRACE estatuto_rep R_BRACE'''
 
 
 def p_estatuto_rep(p):
-    '''estatuto_rep : estatuto_rep estatuto
-                     | estatuto'''
+    '''estatuto_rep : estatuto estatuto_rep 
+                     | empty'''
 
 
 def p_estatuto(p):
@@ -70,25 +77,17 @@ def p_estatuto(p):
                 | llamada
                 | retorno
                 | lectura
-                | repeticion'''
+                | repeticion
+                | repeticion2'''
 
 
 def p_asignacion(p):
-    '''asignacion : ID stack_operand_id array EQUAL stack_operator expresion np_asignacion SEMICOLON'''
+    '''asignacion : ID stack_operand_id array EQUAL stack_operator expOr np_asignacion SEMICOLON'''
 
 
 def p_llamada(p):
-    '''llamada : ID L_PAREN exp_rep R_PAREN np_llamada SEMICOLON'''
+    '''llamada : ID llamadaEra L_PAREN fakebottom parm checkParamNum R_PAREN checkparentesis Gosub'''
     
-#def p_llamada(p):
-#    '''llamada : func_especial L_PAREN exp_rep R_PAREN SEMICOLON
-#               | ID L_PAREN exp_rep R_PAREN np_llamada SEMICOLON'''
-
-
-def p_exp_rep(p):
-    '''exp_rep : exp_rep COMMA expresion
-                | expresion'''
-
 
 #def p_func_especial(p):
 #   '''func_especial : media
@@ -101,11 +100,11 @@ def p_exp_rep(p):
 
 
 def p_retorno(p):
-    '''retorno : RETURN L_PAREN expresion R_PAREN return SEMICOLON'''
+    '''retorno : RETURN L_PAREN expOr np_return R_PAREN SEMICOLON'''
 
 
 def p_lectura(p):
-    '''lectura : READ L_PAREN id_list R_PAREN SEMICOLON'''
+    '''lectura : READ L_PAREN ID np_read R_PAREN SEMICOLON'''
 
 
 def p_escritura(p):
@@ -118,12 +117,12 @@ def p_escritura_rep(p):
 
 
 def p_escritura_aux(p):
-    '''escritura_aux : CTE_S
-                         | expresion'''
+    '''escritura_aux : CTE_S printString
+                         | expOr np_print'''
 
 
 def p_condicion(p):
-    '''condicion : IF L_PAREN expresion R_PAREN GotoF bloque else_aux'''
+    '''condicion : IF L_PAREN expOr R_PAREN GotoF THEN bloque else_aux'''
 
 
 def p_else_aux(p):
@@ -132,9 +131,26 @@ def p_else_aux(p):
 
 
 def p_repeticion(p):
-    '''repeticion : WHILE addJump L_PAREN expresion R_PAREN GotoF bloque end_while'''
-                  #| FOR ID EQUAL expresion TO expresion DO bloque'''
+    '''repeticion : WHILE addJump L_PAREN expOr R_PAREN GotoF bloque end_while'''
 
+def p_repeticion2(p):
+    ''' repeticion2 : FOR ID EQUAL expOr TO expOr DO bloque'''
+
+def p_parm(p):
+    '''parm : expOr checkParam parm2
+            | empty'''
+
+def p_parm2(p):
+    '''parm2 : COMMA expOr checkParam parm2
+            | empty'''
+
+def p_expOr(p):
+    '''expOr : expAnd checkAndOr OR stack_operator expOr
+             | expAnd checkAndOr '''
+
+def p_expAnd(p):
+    '''expAnd : expresion checkAndOr AND stack_operator expAnd
+             | expresion checkAndOr'''
 
 def p_expresion(p):
     '''expresion : exp checkrelop relop'''
@@ -169,12 +185,13 @@ def p_multdiv(p):
 
 
 def p_factor(p):
-    '''factor : L_PAREN fakebottom expresion R_PAREN checkparentesis
+    '''factor : L_PAREN fakebottom expOr R_PAREN checkparentesis
               | var_cte'''
 
 
 def p_var_cte(p):
     '''var_cte : ID stack_operand_id
+                | llamada
                | CTE_I stack_operand_int
                | CTE_F stack_operand_float
                | CTE_CHAR stack_operand_char'''
@@ -216,8 +233,13 @@ Constants = {}
 CurrentFunc = 'global'
 CurrentType = 'void'
 CurrentID = ''
+ReturnT = 0
+ParamCount = 0
+ParamPointer = 0
+CallFunc = ''
 
 dirFunc = {}
+Quadruples.append(['GOTO', None, None, None])
 
 # Directions
 global_int = 1000
@@ -236,6 +258,7 @@ temp_int = 13000
 temp_float = 14000
 temp_char = 15000
 temp_bool = 16000
+stringMemory = 17000
 
 # Semantics
 
@@ -243,11 +266,8 @@ temp_bool = 16000
 def p_create_dirfunc(p):
     'create_dirfunc :'
     global CurrentFunc, CurrentType
-    if CurrentFunc in dirFunc:
-        print('Function already declared')
-    else:
-        dirFunc[CurrentFunc] = {'type': CurrentType,
-                                'vars': {}, 'dir': None, 'size': 0}
+    dirFunc[CurrentFunc] = {'type': CurrentType,
+                                'vars': {}, 'parameters': [], 'Start_dir': 0, 'size': 0}
 
 
 def p_current_type(p):
@@ -273,14 +293,15 @@ def p_addvar(p):
 
 def p_addfunc(p):
     'addfunc :'
-    global CurrentFunc, CurrentType, CurrentID
-    CurrentID = p[-1]
-    if CurrentID in dirFunc:
+    global CurrentFunc, CurrentType, CurrentID, ReturnT
+    ReturnT = 0
+    CurrentFunc = p[-1]
+    if CurrentFunc in dirFunc:
         print('Function already declared')
         sys.exit()
     else:
-        dirFunc[CurrentID] = {'type': CurrentType,
-                              'vars': {}, 'dir': None, 'size': 0}
+        dirFunc[CurrentFunc] = {'type': CurrentType,
+                              'vars': {}, 'parameters': [], 'dir': 0, 'size': 0}
 
 def p_get_global_Mem(type):
     global global_int, global_float, global_char, global_bool
@@ -346,7 +367,7 @@ def p_get_local_Mem(type):
             sys.exit()
 
 def p_get_const_Mem(type):
-    global const_int, const_float, const_char, const_bool
+    global const_int, const_float, const_char, const_bool, stringMemory
     if type == 'int':
         if const_int < 10000:
             const_int += 1
@@ -372,6 +393,10 @@ def p_get_const_Mem(type):
         if const_bool < 13000:
             const_bool += 1
             return const_bool
+    elif type == 'string':
+        if stringMemory < 18000:
+            stringMemory += 1
+            return stringMemory
         else:
             print('Stack overflow')
             sys.exit()
@@ -479,74 +504,93 @@ def p_checkparentesis(p):
         print('Parentesis mismatch')
         sys.exit()
 
+def p_checkAndOr(p):
+    'checkAndOr :'
+    global Operators_Stack, Operators_Stack, Quadruples
+    if Operators_Stack:
+        if Operators_Stack[-1] == '&' or Operators_Stack[-1] == '|':
+            right_operand = Operands_Stack.pop()
+            left_operand = Operands_Stack.pop()
+            operator = Operators_Stack.pop()
+            cubo_semantico = CuboSemantico()  
+            result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
+            if result_type != 'error':
+                address = p_get_temp_Mem(result_type)
+                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
+                Quadruples.append([operator, left_operand['dir'],
+                                right_operand['dir'], address])
+            else:
+                print('Type mismatch 1')
+                sys.exit()
 
 def p_checkterm(p):
     'checkterm :'
     global Operators_Stack, Operators_Stack, Quadruples
-    if Operators_Stack[-1] == '*' or Operators_Stack[-1] == '/':
-        right_operand = Operands_Stack.pop()
-        left_operand = Operands_Stack.pop()
-        operator = Operators_Stack.pop()
-        cubo_semantico = CuboSemantico()  
-        result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
-        if result_type != 'error':
-            address = p_get_temp_Mem(result_type)
-            Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
-            Quadruples.append([operator, left_operand['dir'],
-                               right_operand['dir'], address])
-        else:
-            print('Type mismatch')
-            sys.exit()
+    if Operators_Stack:
+        if Operators_Stack[-1] == '*' or Operators_Stack[-1] == '/':
+            right_operand = Operands_Stack.pop()
+            left_operand = Operands_Stack.pop()
+            operator = Operators_Stack.pop()
+            cubo_semantico = CuboSemantico()  
+            result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
+            if result_type != 'error':
+                address = p_get_temp_Mem(result_type)
+                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
+                Quadruples.append([operator, left_operand['dir'],
+                                right_operand['dir'], address])
+            else:
+                print('Type mismatch 2')
+                sys.exit()
         
 
 def p_checkexp(p):
     'checkexp :'
     global Operators_Stack, Operators_Stack, Quadruples
-    if Operators_Stack[-1] == '+' or Operators_Stack[-1] == '-':
-        right_operand = Operands_Stack.pop()
-        left_operand = Operands_Stack.pop()
-        operator = Operators_Stack.pop()
-        cubo_semantico = CuboSemantico()  
-        result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
-        if result_type != 'error':
-            address = p_get_temp_Mem(result_type)
-            Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
-            Quadruples.append([operator, left_operand['dir'],
-                               right_operand['dir'], address])
-        else:
-            print('Type mismatch')
-            sys.exit()
+    if Operators_Stack: 
+        if Operators_Stack[-1] == '+' or Operators_Stack[-1] == '-':
+            right_operand = Operands_Stack.pop()
+            left_operand = Operands_Stack.pop()
+            operator = Operators_Stack.pop()
+            cubo_semantico = CuboSemantico()  
+            result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
+            if result_type != 'error':
+                address = p_get_temp_Mem(result_type)
+                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
+                Quadruples.append([operator, left_operand['dir'],
+                                right_operand['dir'], address])
+            else:
+                print('Type mismatch 3')
+                sys.exit()
 
 
 def p_checkrelop(p):
     'checkrelop :'
     global Operators_Stack, Operators_Stack, Quadruples
-    if Operators_Stack[-1] == '<' or Operators_Stack[-1] == '>' or Operators_Stack[-1] == '<=' or Operators_Stack[-1] == '>=' or Operators_Stack[-1] == '==':
-        right_operand = Operands_Stack.pop()
-        left_operand = Operands_Stack.pop()
-        operator = Operators_Stack.pop()
-        cubo_semantico = CuboSemantico()
-        result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
-        if result_type != 'error':
-            address = p_get_temp_Mem(result_type)
-            Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
-            Quadruples.append([operator, left_operand['dir'],
-                               right_operand['dir'], address])
-        else:
-            print('Type mismatch')
-            sys.exit()
+    if Operators_Stack:
+        if Operators_Stack[-1] == '<' or Operators_Stack[-1] == '>' or Operators_Stack[-1] == '<=' or Operators_Stack[-1] == '>=' or Operators_Stack[-1] == '==':
+            right_operand = Operands_Stack.pop()
+            left_operand = Operands_Stack.pop()
+            operator = Operators_Stack.pop()
+            cubo_semantico = CuboSemantico()
+            print(left_operand['type'], right_operand['type'], operator)
+            result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
+            print(result_type)
+            if result_type != 'error':
+                address = p_get_temp_Mem(result_type)
+                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
+                Quadruples.append([operator, left_operand['dir'],
+                                right_operand['dir'], address])
+            else:
+                print('Type mismatch 4')
+                sys.exit()
 
 
-def p_np_llamada(p):
-    'np_llamada :'
-    global Operands_Stack, Operators_Stack, Quadruples, CurrentFunc, dirFunc
+def p_llamdaEra(p):
+    'llamadaEra :'
+    global Operands_Stack, Operators_Stack, Quadruples, CurrentFunc, dirFunc, CallFunc
+    CallFunc = p[-1]
     if p[-1] in dirFunc:
-        if dirFunc[p[-1]]['type'] != 'void':
-            print('Function has to return a value')
-        else:
-            Quadruples.append(['ERA', p[-1], None, None])
-            Quadruples.append(['GOSUB', p[-1], None, None])
-            Quadruples.append(['ENDPROC', None, None, None])
+        Quadruples.append(['ERA', None, None, CallFunc])
     else:
         print('Function not declared')
         sys.exit()
@@ -569,18 +613,21 @@ def p_np_asignacion(p):
         if result_type != 'error':
             Quadruples.append(['=', right_operand, None, left_operand])
         else:
-            print('Type mismatch')
+            print('Type mismatch 5')
             sys.exit()
 
-def p_return(p):
-    'return :'
-    global Operands_Stack, Operators_Stack, Quadruples, CurrentFunc, dirFunc
+def p_np_return(p):
+    'np_return :'
+    global Operands_Stack, Operators_Stack, Quadruples, CurrentFunc, dirFunc, ReturnT
     right_operand = Operands_Stack.pop()
     result_type = dirFunc[CurrentFunc]['type']
     if right_operand['type'] == result_type:
+        ReturnT = 1
         Quadruples.append(['return', None, None, right_operand['dir']])
     else:
-        print('Type mismatch')
+        print(CurrentFunc)
+        print(dirFunc)
+        print('Type mismatch 6')
         sys.exit()
 
 def p_GotoF(p):
@@ -591,7 +638,7 @@ def p_GotoF(p):
         Quadruples.append(['GotoF', result, None, None])
         JumpStack.append(len(Quadruples) - 1)
     else:
-        print('Type mismatch')
+        print('Type mismatch 7')
         sys.exit()
 
 def p_Goto(p):
@@ -622,12 +669,119 @@ def p_addJump(p):
     JumpStack.append(len(Quadruples))
 
 
+def p_endFunc(p):
+    'endFunc :'
+    global Operands_Stack, Operators_Stack, Quadruples, JumpStack, ReturnT, CurrentFunc, dirFunc
+    result_type = dirFunc[CurrentFunc]['type']
+    
+    if result_type != 'void' and ReturnT == 0:
+        print('Function has to return a value')
+        sys.exit()
+    
+    if result_type == 'void' and ReturnT == 1:
+        print('Function should not have a return')
+        sys.exit()
+    
+    Quadruples.append(['ENDFUNC', None, None, None])
+    ReturnT = 0
 
+
+def p_updateParams(p):
+    'updateParams :'
+    global dirFunc, CurrentFunc, CurrentType, CurrentID, ParamCount
+    var = dirFunc[CurrentFunc]['vars'][CurrentID]
+    address = var.get('dir')
+    tipo = var.get('type')
+    dirFunc[CurrentFunc]['parameters'].append([tipo, address])
+    ParamCount += 1
+
+def p_funcJump(p):
+    'funcJump :'
+    global dirFunc,Quadruples, CurrentFunc, ParamCount
+    dirFunc[CurrentFunc]['dir'] = len(Quadruples)
+    dirFunc[CurrentFunc]['size'] += ParamCount
+    ParamCount = 0
+
+def p_funcChange(p):
+    'funcChange :'
+    global CurrentFunc
+    CurrentFunc = 'global'
+
+def p_np_print(p):
+    'np_print :'
+    global Operands_Stack, Quadruples
+    result = Operands_Stack.pop()
+    Quadruples.append(['PRINT',None,None,result['dir']])
+
+def p_printString(p):
+    'printString :'
+    global Operands_Stack, Quadruples
+    address = p_get_const_Mem('string')
+    Constants[p[-1]] = {'dir': address, 'type': 'string'}
+    Quadruples.append(['PRINT',None,None,address])
+
+def p_np_read(p):
+    'np_read :'
+    global dirFunc, CurrentFunc, Quadruples
+    variable_name = p[-1]
+    if variable_name not in dirFunc[CurrentFunc]['vars']:
+        print('Variable not declared')
+        sys.exit()
+    else:
+        address = dirFunc[CurrentFunc]['vars'][variable_name]['dir']
+        Quadruples.append(['READ', None, None, address])
+
+
+def p_start(p):
+    'start :'
+    global Quadruples
+    if not Quadruples:
+        Quadruples.append([None, None, None, None])
+    Quadruples[0][3] = len(Quadruples)
 
 def p_endProc(p):
     'endProc :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
     Quadruples.append(['ENDPROC', None, None, None])
+
+def p_checkParam(p):
+    'checkParam :'
+    global Operands_Stack, Quadruples, CallFunc, ParamPointer, dirFunc
+
+    arg = Operands_Stack.pop()
+    argType = arg['type']
+    paramType, paramAddr = dirFunc[CallFunc]['parameters'][ParamPointer]
+
+    if argType == paramType:
+        argAddr = arg['dir']
+        Quadruples.append(['PARAM', None, argAddr, paramAddr])
+        ParamPointer += 1
+    else:
+        print('Parameter types do not match')
+
+def p_checkParamNum(p):
+    'checkParamNum :'
+    global Operands_Stack, Quadruples, CallFunc, ParamPointer, dirFunc
+    if (ParamPointer != len(dirFunc[CallFunc]['parameters'])):
+        print('Number of parameters does not match')
+        sys.exit()
+
+def p_Gosub(p):
+    'Gosub :'
+    global Operands_Stack, Quadruples, CallFunc, ParamPointer, dirFunc
+
+    Quadruples.append(['GOSUB', None, None, CallFunc])
+
+    tipo = dirFunc[CallFunc].get('type')
+    if tipo != 'void':
+        dirResult = dirFunc[CallFunc].get('dir')
+        nextDir = p_get_temp_Mem(tipo)
+        Quadruples.append(['=', dirResult, None, nextDir])
+        Operands_Stack.append({'name': 'temp', 'type': tipo, 'dir': nextDir, 'size': 0})
+
+    ParamPointer = 0
+        
+
 
 parser = yacc.yacc()
 

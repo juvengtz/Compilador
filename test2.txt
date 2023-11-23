@@ -1,5 +1,12 @@
-program simpleTest;
-var a, b:int;
+program MyRlike;
+var int: i, j, p, arreglo[10];
+float: valor;
+
+function in fact(int:j)
+var int : i;
+{
+  i = j + (p - j * 2 +j)
+}
 
 function int multiply() {
   return(6);
