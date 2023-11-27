@@ -57,7 +57,7 @@ t_L_BRACKET = r'\['
 t_R_BRACKET = r'\]'
 t_L_BRACE = r'\{'
 t_R_BRACE = r'\}'
-t_AND = r'&'
+t_AND = r'\&'
 t_OR = r'\|'
 t_ignore = ' \t'
 

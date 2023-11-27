@@ -1,5 +1,5 @@
 program test1;
-var int : a, b,p;
+var int : a, b,p,d, arr[10];
 var bool : c;
 
 function int fact(int j)
@@ -20,6 +20,13 @@ var int : i;
 
 main ()
  {
-  a = 1;
+  d = 1;
+  while(d < 10) do{
+    arr[d] = 1;
+    write(arr[d]);
+    d = d +1;
+  }
+  read(a);
   b = fact(a);
+  write(b);
 }

@@ -3,6 +3,8 @@ import sys
 from Lexer import tokens, lexer
 from Cubo_Semantico import *
 from Cuadruplo import *
+import pickle
+from pprint import pprint
 
 
 def p_programa(p):
@@ -23,7 +25,7 @@ def p_id_list(p):
 
 
 def p_array(p):
-    '''array : L_BRACKET CTE_I R_BRACKET
+    '''array : L_BRACKET CTE_I addDim R_BRACKET jumpAddr
                     | empty'''
 
 
@@ -77,12 +79,13 @@ def p_estatuto(p):
                 | llamada
                 | retorno
                 | lectura
-                | repeticion
-                | repeticion2'''
+                | repeticion'''
+                #| repeticion2'''
 
 
 def p_asignacion(p):
-    '''asignacion : ID stack_operand_id array EQUAL stack_operator expOr np_asignacion SEMICOLON'''
+    '''asignacion : ID stack_operand_id EQUAL stack_operator expOr np_asignacion SEMICOLON
+                    | var_dim EQUAL stack_operator expOr np_asignacion SEMICOLON'''
 
 
 def p_llamada(p):
@@ -131,10 +134,10 @@ def p_else_aux(p):
 
 
 def p_repeticion(p):
-    '''repeticion : WHILE addJump L_PAREN expOr R_PAREN GotoF bloque end_while'''
+    '''repeticion : WHILE addJump L_PAREN expOr R_PAREN GotoF DO bloque end_while'''
 
-def p_repeticion2(p):
-    ''' repeticion2 : FOR ID EQUAL expOr TO expOr DO bloque'''
+#def p_repeticion2(p):
+ #   ''' repeticion2 : FOR ID EQUAL expOr TO expOr DO bloque'''
 
 def p_parm(p):
     '''parm : expOr checkParam parm2
@@ -194,7 +197,11 @@ def p_var_cte(p):
                 | llamada
                | CTE_I stack_operand_int
                | CTE_F stack_operand_float
-               | CTE_CHAR stack_operand_char'''
+               | CTE_CHAR stack_operand_char
+               | var_dim'''
+    
+def p_var_dim(p):
+    '''var_dim : ID stack_operand_id L_BRACKET verDim fakebottom expOr cuadVer R_BRACKET checkparentesis verDimNum cuadVarDim  '''
 
 
 def p_empty(p):
@@ -236,7 +243,11 @@ CurrentID = ''
 ReturnT = 0
 ParamCount = 0
 ParamPointer = 0
+tempCount = 0
 CallFunc = ''
+VarDimTable = []
+dimVarAux = ''
+dimCounter = 0
 
 dirFunc = {}
 Quadruples.append(['GOTO', None, None, None])
@@ -259,23 +270,25 @@ temp_float = 14000
 temp_char = 15000
 temp_bool = 16000
 stringMemory = 17000
+pointerInt = 18000
+pointerFloat = 19000
 
 # Semantics
 
-
+#Crea una nueva función en el directorio de funciones
 def p_create_dirfunc(p):
     'create_dirfunc :'
     global CurrentFunc, CurrentType
     dirFunc[CurrentFunc] = {'type': CurrentType,
                                 'vars': {}, 'parameters': [], 'Start_dir': 0, 'size': 0}
 
-
+#Establece la variable global CurrentType con el valor de p[-1]
 def p_current_type(p):
     'current_type :'
     global CurrentType
     CurrentType = p[-1]
 
-
+#Esta función agrega una variable al diccionario de variables de la función actual
 def p_addvar(p):
     'addvar :'
     global CurrentFunc, CurrentType, CurrentID
@@ -285,12 +298,12 @@ def p_addvar(p):
         sys.exit()
     else:
         if CurrentFunc == 'global':
-            address = p_get_global_Mem(CurrentType)
+            address = get_global_Mem(CurrentType)
         else:
-            address = p_get_local_Mem(CurrentType)
-        dirFunc[CurrentFunc]['vars'][CurrentID] = {
-            'name': CurrentID, 'type': CurrentType, 'dir': address, 'size': 0}
+            address = get_local_Mem(CurrentType)
+        dirFunc[CurrentFunc]['vars'][CurrentID] = {'type': CurrentType, 'dir': address, 'dim': []}
 
+#Añade una función al diccionario de funciones
 def p_addfunc(p):
     'addfunc :'
     global CurrentFunc, CurrentType, CurrentID, ReturnT
@@ -301,9 +314,12 @@ def p_addfunc(p):
         sys.exit()
     else:
         dirFunc[CurrentFunc] = {'type': CurrentType,
-                              'vars': {}, 'parameters': [], 'dir': 0, 'size': 0}
+                              'vars': {}, 'parameters': [], 'Start_dir': 0, 'size': 0}
+        address = get_global_Mem(CurrentType)
+        dirFunc['global']['vars'][CurrentFunc] = {'type': CurrentType, 'dir': address, 'dim': []}
 
-def p_get_global_Mem(type):
+
+def get_global_Mem(type):
     global global_int, global_float, global_char, global_bool
     if type == 'int':
         if global_int < 2000:
@@ -335,7 +351,7 @@ def p_get_global_Mem(type):
             sys.exit()
 
 
-def p_get_local_Mem(type):
+def get_local_Mem(type):
     global local_int, local_float, local_char, local_bool
     if type == 'int':
         if local_int < 6000:
@@ -366,7 +382,7 @@ def p_get_local_Mem(type):
             print('Stack overflow')
             sys.exit()
 
-def p_get_const_Mem(type):
+def get_const_Mem(type):
     global const_int, const_float, const_char, const_bool, stringMemory
     if type == 'int':
         if const_int < 10000:
@@ -401,7 +417,7 @@ def p_get_const_Mem(type):
             print('Stack overflow')
             sys.exit()
 
-def p_get_temp_Mem(type):
+def get_temp_Mem(type):
     global temp_int, temp_float, temp_char, temp_bool
     if type == 'int':
         if temp_int < 14000:
@@ -432,8 +448,63 @@ def p_get_temp_Mem(type):
             print('Stack overflow')
             sys.exit()
 
+def get_nextAddrVarDim(type,size):
+    global global_int, global_float, global_char, global_bool, local_int, local_float, local_char, local_bool
+    if type == 'int':
+        if global_int < 2000:
+            global_int += size
+            
+        else:
+            print('Stack overflow')
+            sys.exit()
+    elif type == 'float':
+        if global_float < 3000:
+            global_float += size
+            
+        else:
+            print('Stack overflow')
+            sys.exit()
+    elif type == 'char':
+        if global_char < 4000:
+            global_char += size
+            
+        else:
+            print('Stack overflow')
+            sys.exit()
+    elif type == 'bool':
+        if global_bool < 5000:
+            global_bool += size
+        
+        else:
+            print('Stack overflow')
+            sys.exit()
 
 
+def getPointerVar(type):
+    global pointerInt, pointerFloat
+    if type == 'int':
+        if pointerInt < 19000:
+            pointerInt += 1
+            return pointerInt
+        else:
+            print('Stack overflow')
+            sys.exit()
+    elif type == 'float':
+        if pointerFloat < 20000:
+            pointerFloat += 1
+            return pointerFloat
+        else:
+            print('Stack overflow')
+            sys.exit()
+
+def reset_local_Mem():
+    global local_int, local_float, local_char, local_bool
+    local_int = 5000
+    local_float = 6000
+    local_char = 7000
+    local_bool = 8000
+
+# maneja la operación de apilar un operando identificador en la pila de operandos
 def p_stack_operand_id(p):
     'stack_operand_id :'
     global Operands_Stack, Operators_Stack, dirFunc, CurrentFunc
@@ -450,51 +521,61 @@ def p_stack_operand_id(p):
     var_type = var_info.get('type')
     var_address = var_info.get('dir')
 
-    Operands_Stack.append({'name': var_name, 'type': var_type, 'dir': var_address, 'size': 0})
+    Operands_Stack.append({'name': var_name, 'type': var_type, 'dir': var_address})
 
 
-
+#Apila un operando entero en la pila de operandos
 def p_stack_operand_int(p):
     'stack_operand_int :'
     global Operands_Stack, Constants
     idName = p[-1]
-    address = p_get_const_Mem('int')
+    
     if p[-1] not in Constants:
+        address = get_const_Mem('int')
         Constants[idName] = {'dir': address, 'type': 'int'}
-    Operands_Stack.append({'name': idName, 'type': 'int', 'dir': address, 'size': 0})
+    else:
+        address = Constants[idName].get('dir')
+    Operands_Stack.append({'name': idName, 'type': 'int', 'dir': address})
 
 
-
+#Apila un operando flotante en la pila de operandos
 def p_stack_operand_float(p):
     'stack_operand_float :'
     global Operands_Stack, Constants
     idName = p[-1]
-    address = p_get_const_Mem('float')
+    
     if p[-1] not in Constants:
+        address = get_const_Mem('float')
         Constants[idName] = {'dir': address, 'type': 'float'}
-    Operands_Stack.append({'name': idName, 'type': 'float', 'dir': address, 'size': 0})
+    else:
+        address = Constants[idName].get('dir')
+    Operands_Stack.append({'name': idName, 'type': 'float', 'dir': address})
 
-
+#Apila un operando caracter en la pila de operandos
 def p_stack_operand_char(p):
     'stack_operand_char :'
     global Operands_Stack, Constants
     idName = p[-1]
-    address = p_get_const_Mem('char')
+    
     if p[-1] not in Constants:
+        address = get_const_Mem('char')
         Constants[idName] = {'dir': address, 'type': 'char'}
-    Operands_Stack.append({'name': idName, 'type': 'char', 'dir': address, 'size': 0})
+    else:
+        address = Constants[idName].get('dir')
+    Operands_Stack.append({'name': idName, 'type': 'char', 'dir': address})
 
+#Añade el operador a la pila de operadores
 def p_stack_operator(p):
     'stack_operator :'
     global Operators_Stack
     Operators_Stack.append(p[-1])
-    print("Operator parsed:", p[-1])
 
+#agrega un paréntesis abierto "(" a la pila de operadores
 def p_fakebottom(p):
     'fakebottom :'
     global Operators_Stack
     Operators_Stack.append('(')
-
+#Verifica si hay un paréntesis en la pila de operadores. Si hay un paréntesis de apertura, lo elimina de la pila.
 def p_checkparentesis(p):
     'checkparentesis :'
     global Operators_Stack
@@ -504,9 +585,10 @@ def p_checkparentesis(p):
         print('Parentesis mismatch')
         sys.exit()
 
+# agrega los cuádruplos AND OR a la lista de cuádruplos
 def p_checkAndOr(p):
     'checkAndOr :'
-    global Operators_Stack, Operators_Stack, Quadruples
+    global Operators_Stack, Quadruples
     if Operators_Stack:
         if Operators_Stack[-1] == '&' or Operators_Stack[-1] == '|':
             right_operand = Operands_Stack.pop()
@@ -515,17 +597,19 @@ def p_checkAndOr(p):
             cubo_semantico = CuboSemantico()  
             result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
             if result_type != 'error':
-                address = p_get_temp_Mem(result_type)
-                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
+                address = get_temp_Mem(result_type)
+                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address})
                 Quadruples.append([operator, left_operand['dir'],
                                 right_operand['dir'], address])
+                tempCount += 1
             else:
                 print('Type mismatch 1')
                 sys.exit()
 
+# agrega los cuádruplos * / a la lista de cuádruplos
 def p_checkterm(p):
     'checkterm :'
-    global Operators_Stack, Operators_Stack, Quadruples
+    global Operators_Stack, Quadruples,tempCount
     if Operators_Stack:
         if Operators_Stack[-1] == '*' or Operators_Stack[-1] == '/':
             right_operand = Operands_Stack.pop()
@@ -534,18 +618,19 @@ def p_checkterm(p):
             cubo_semantico = CuboSemantico()  
             result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
             if result_type != 'error':
-                address = p_get_temp_Mem(result_type)
-                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
+                address = get_temp_Mem(result_type)
+                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address})
                 Quadruples.append([operator, left_operand['dir'],
                                 right_operand['dir'], address])
+                tempCount += 1
             else:
                 print('Type mismatch 2')
                 sys.exit()
         
-
+# agrega los cuádruplos + - a la lista de cuádruplos
 def p_checkexp(p):
     'checkexp :'
-    global Operators_Stack, Operators_Stack, Quadruples
+    global Operators_Stack, Quadruples,tempCount
     if Operators_Stack: 
         if Operators_Stack[-1] == '+' or Operators_Stack[-1] == '-':
             right_operand = Operands_Stack.pop()
@@ -554,37 +639,37 @@ def p_checkexp(p):
             cubo_semantico = CuboSemantico()  
             result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
             if result_type != 'error':
-                address = p_get_temp_Mem(result_type)
-                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
+                address = get_temp_Mem(result_type)
+                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address})
                 Quadruples.append([operator, left_operand['dir'],
                                 right_operand['dir'], address])
+                tempCount += 1
             else:
                 print('Type mismatch 3')
                 sys.exit()
 
-
+# agrega los cuádruplos comparadores a la lista de cuádruplos
 def p_checkrelop(p):
     'checkrelop :'
-    global Operators_Stack, Operators_Stack, Quadruples
+    global Operators_Stack, Quadruples,tempCount
     if Operators_Stack:
         if Operators_Stack[-1] == '<' or Operators_Stack[-1] == '>' or Operators_Stack[-1] == '<=' or Operators_Stack[-1] == '>=' or Operators_Stack[-1] == '==':
             right_operand = Operands_Stack.pop()
             left_operand = Operands_Stack.pop()
             operator = Operators_Stack.pop()
             cubo_semantico = CuboSemantico()
-            print(left_operand['type'], right_operand['type'], operator)
             result_type = cubo_semantico.get_type(left_operand['type'], right_operand['type'], operator)
-            print(result_type)
             if result_type != 'error':
-                address = p_get_temp_Mem(result_type)
-                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address, 'size': 0})
+                address = get_temp_Mem(result_type)
+                Operands_Stack.append({'name': 'temp', 'type': result_type, 'dir': address})
                 Quadruples.append([operator, left_operand['dir'],
                                 right_operand['dir'], address])
+                tempCount += 1
             else:
                 print('Type mismatch 4')
                 sys.exit()
 
-
+# agrega el cuádruplo ERA a la lista de cuádruplos
 def p_llamdaEra(p):
     'llamadaEra :'
     global Operands_Stack, Operators_Stack, Quadruples, CurrentFunc, dirFunc, CallFunc
@@ -596,26 +681,28 @@ def p_llamdaEra(p):
         sys.exit()
 
 
+# agrega el cuádruplo de asignacion a la lista de cuádruplos
 def p_np_asignacion(p):
     'np_asignacion :'
     global Operands_Stack, Operators_Stack, Quadruples, CurrentFunc, dirFunc
     if Operators_Stack[-1] == '=':
-        Operators_Stack.pop()
         operando = Operands_Stack.pop()
         right_operand = operando['dir']
         right_type = operando['type']
         idOperand = Operands_Stack.pop()
         left_operand = idOperand['dir']
         left_type = idOperand['type']
+        operator = Operators_Stack.pop()
         cubo_semantico = CuboSemantico()  
-        result_type = cubo_semantico.get_type(left_type, right_type, '=')
+        result_type = cubo_semantico.get_type(left_type, right_type, operator)
         
         if result_type != 'error':
-            Quadruples.append(['=', right_operand, None, left_operand])
+            Quadruples.append([operator, right_operand, None, left_operand])
         else:
             print('Type mismatch 5')
             sys.exit()
 
+# agrega el cuádruplo Return a la lista de cuádruplos
 def p_np_return(p):
     'np_return :'
     global Operands_Stack, Operators_Stack, Quadruples, CurrentFunc, dirFunc, ReturnT
@@ -625,55 +712,58 @@ def p_np_return(p):
         ReturnT = 1
         Quadruples.append(['return', None, None, right_operand['dir']])
     else:
-        print(CurrentFunc)
-        print(dirFunc)
         print('Type mismatch 6')
         sys.exit()
 
+# agrega el cuádruplo GOTOF a la lista de cuádruplos
 def p_GotoF(p):
     'GotoF :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
     result = Operands_Stack.pop()
     if result['type'] == 'bool':
-        Quadruples.append(['GotoF', result, None, None])
+        Quadruples.append(['GOTOF', result['dir'], None, None])
         JumpStack.append(len(Quadruples) - 1)
     else:
         print('Type mismatch 7')
         sys.exit()
 
+# agrega el cuádruplo GOTO a la lista de cuádruplos
 def p_Goto(p):
     'Goto :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
-    Quadruples.append(['Goto', None, None, None])
+    Quadruples.append(['GOTO', None, None, None])
     false = JumpStack.pop()
     JumpStack.append(len(Quadruples) - 1)
     Quadruples[false][3] = len(Quadruples)
 
+#Finaliza una instrucción "if" en el analizador sintáctico
 def p_end_if(p):
     'end_if :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
     end = JumpStack.pop()
     Quadruples[end][3] = len(Quadruples)
 
+#Desapila los elementos necesarios de las pilas y genera el cuádruplo GOTO para finalizar un bucle while
 def p_end_while(p):
     'end_while :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
     end = JumpStack.pop()
     ret = JumpStack.pop()
-    Quadruples.append(['Goto', None, None, ret])
+    Quadruples.append(['GOTO', None, None, ret])
     Quadruples[end][3] = len(Quadruples)
 
+#Añade un salto a la pila de saltos
 def p_addJump(p):
     'addJump :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
     JumpStack.append(len(Quadruples))
 
-
+#Agrega el cuádruplo 'ENDFUNC' a la lista de cuádruplos
 def p_endFunc(p):
     'endFunc :'
-    global Operands_Stack, Operators_Stack, Quadruples, JumpStack, ReturnT, CurrentFunc, dirFunc
+    global Operands_Stack, Operators_Stack, Quadruples, JumpStack, ReturnT, CurrentFunc, dirFunc,tempCount
     result_type = dirFunc[CurrentFunc]['type']
-    
+    dirFunc[CurrentFunc]['size'] += tempCount
     if result_type != 'void' and ReturnT == 0:
         print('Function has to return a value')
         sys.exit()
@@ -681,11 +771,12 @@ def p_endFunc(p):
     if result_type == 'void' and ReturnT == 1:
         print('Function should not have a return')
         sys.exit()
-    
+    tempCount = 0
     Quadruples.append(['ENDFUNC', None, None, None])
+    reset_local_Mem()
     ReturnT = 0
 
-
+#Actualiza los parámetros de la función actual
 def p_updateParams(p):
     'updateParams :'
     global dirFunc, CurrentFunc, CurrentType, CurrentID, ParamCount
@@ -695,31 +786,35 @@ def p_updateParams(p):
     dirFunc[CurrentFunc]['parameters'].append([tipo, address])
     ParamCount += 1
 
+#Establece la dirección de inicio de una función en el diccionario dirFunc,actualiza el tamaño de la función
 def p_funcJump(p):
     'funcJump :'
     global dirFunc,Quadruples, CurrentFunc, ParamCount
-    dirFunc[CurrentFunc]['dir'] = len(Quadruples)
+    dirFunc[CurrentFunc]['Start_dir'] = len(Quadruples)
     dirFunc[CurrentFunc]['size'] += ParamCount
     ParamCount = 0
 
+#Cambia la función actual a "global"
 def p_funcChange(p):
     'funcChange :'
     global CurrentFunc
     CurrentFunc = 'global'
 
+## agrega el cuádruplo PRINT a la lista de cuádruplos
 def p_np_print(p):
     'np_print :'
     global Operands_Stack, Quadruples
     result = Operands_Stack.pop()
     Quadruples.append(['PRINT',None,None,result['dir']])
-
+#Imprime una String, agrega el cuádruplo PRINT a la lista de cuádruplos
 def p_printString(p):
     'printString :'
     global Operands_Stack, Quadruples
-    address = p_get_const_Mem('string')
+    address = get_const_Mem('string')
     Constants[p[-1]] = {'dir': address, 'type': 'string'}
     Quadruples.append(['PRINT',None,None,address])
 
+# agrega el cuádruplo READ a la lista de cuádruplos
 def p_np_read(p):
     'np_read :'
     global dirFunc, CurrentFunc, Quadruples
@@ -728,37 +823,40 @@ def p_np_read(p):
         print('Variable not declared')
         sys.exit()
     else:
-        address = dirFunc[CurrentFunc]['vars'][variable_name]['dir']
+        address = dirFunc[CurrentFunc]['vars'][variable_name].get('dir')
         Quadruples.append(['READ', None, None, address])
 
-
+#Inicia el analisis sintáctico
 def p_start(p):
     'start :'
     global Quadruples
-    if not Quadruples:
-        Quadruples.append([None, None, None, None])
     Quadruples[0][3] = len(Quadruples)
 
+# agrega el cuádruplo ENDPROC a la lista de cuádruplos
 def p_endProc(p):
     'endProc :'
     global Operands_Stack, Operators_Stack, Quadruples, JumpStack
     Quadruples.append(['ENDPROC', None, None, None])
 
+#comprobar si el tipo del parámetro pasado coincide con el tipo esperado, si si, agrega el cuádruplo PARAM a la lista de cuádruplos
 def p_checkParam(p):
     'checkParam :'
     global Operands_Stack, Quadruples, CallFunc, ParamPointer, dirFunc
 
     arg = Operands_Stack.pop()
-    argType = arg['type']
-    paramType, paramAddr = dirFunc[CallFunc]['parameters'][ParamPointer]
+    argType = arg.get('type')
+    paramType = dirFunc[CallFunc]['parameters'][ParamPointer][0]
+    
 
     if argType == paramType:
-        argAddr = arg['dir']
+        paramAddr = dirFunc[CallFunc]['parameters'][ParamPointer][1]
+        argAddr = arg.get('dir')
         Quadruples.append(['PARAM', None, argAddr, paramAddr])
         ParamPointer += 1
     else:
         print('Parameter types do not match')
 
+#Verifica si el número de parámetros coincide
 def p_checkParamNum(p):
     'checkParamNum :'
     global Operands_Stack, Quadruples, CallFunc, ParamPointer, dirFunc
@@ -766,21 +864,98 @@ def p_checkParamNum(p):
         print('Number of parameters does not match')
         sys.exit()
 
+
+# agrega el cuádruplo GOSUB a la lista de cuádruplos y agrega el cuádruplo de asignación a la lista de cuádruplos
 def p_Gosub(p):
     'Gosub :'
     global Operands_Stack, Quadruples, CallFunc, ParamPointer, dirFunc
 
     Quadruples.append(['GOSUB', None, None, CallFunc])
 
-    tipo = dirFunc[CallFunc].get('type')
+    tipo = dirFunc['global']['vars'][CallFunc].get('type')
     if tipo != 'void':
-        dirResult = dirFunc[CallFunc].get('dir')
-        nextDir = p_get_temp_Mem(tipo)
+        dirResult = dirFunc['global']['vars'][CallFunc].get('dir')
+        nextDir = get_temp_Mem(tipo)
         Quadruples.append(['=', dirResult, None, nextDir])
-        Operands_Stack.append({'name': 'temp', 'type': tipo, 'dir': nextDir, 'size': 0})
+        Operands_Stack.append({'name': 'temp', 'type': tipo, 'dir': nextDir})
 
     ParamPointer = 0
+
+
+
+#Añade una dimensión a una variable en la pila de operandos
+def p_addDim(p):
+    'addDim :'
+    global Operands_Stack, Quadruples, dirFunc, CurrentFunc, Constants
+    if(p[-1] <= 0):
+        print('Dimension must be greater than 0')
+        sys.exit()
+    else:
+        addr = get_const_Mem('int')
+        dirFunc[CurrentFunc]['vars'][CurrentID]['dim'].append([p[-1]])
+        if(p[-1] not in Constants):
+            Constants[p[-1]] = {'dir': addr, 'type': 'int'}
+
+#Salto a dirección de salto
+def p_jumpAddr(p):
+    'jumpAddr :'
+    global dirFunc, CurrentFunc, Quadruples,CurrentID, CurrentType
+    if(CurrentType == 'int' or CurrentType == 'float'):
+       val1 = dirFunc[CurrentFunc]['vars'][CurrentID]['dim'][0][0]
+       get_nextAddrVarDim(CurrentType,val1-1)
+    else:
+        print('Type mismatch')
+        sys.exit()
+
+#Verifica si la variable tiene la dimensión adecuada
+def p_verDim(p):
+    'verDim :'
+    global dirFunc, CurrentFunc, Quadruples,CurrentID, CurrentType, dimCounter, dimVarAux
+    if dimCounter == 0:
+        top = Operands_Stack.pop()
+        dimVarAux = top.get('name')     
+    if dirFunc[CurrentFunc]['vars'][dimVarAux]['dim'] [dimCounter] == None:
+        print("variable does not have the size", dimVarAux)
+        sys.exit()
+    dimCounter += 1
+
+
+#Verifica si el número de dimensiones coincide con la variable
+def p_verDimNum(p):
+    'verDimNum :'
+    global dirFunc, dimCounter, dimCounter, CurrentFunc, dimVarAux
+    if (len(dirFunc[CurrentFunc]['vars'][dimVarAux]['dim']) !=  dimCounter):
+        print("number of dimensions mismatch the variable") 
+        sys.exit()
         
+#Verifica si el valor en la cima de la pila de operandos está dentro de los límites establecidos
+def p_cuadVer(p):
+    'cuadVer :'
+    global Operands_Stack, Quadruples, Constants, dimCounter, dimVarAux, dirFunc, CallFunc
+    top = Operands_Stack[-1].get('dir')
+    val = dirFunc[CurrentFunc]['vars'][dimVarAux]['dim'][dimCounter-1][0]
+    valAddr = Constants[val].get('dir')
+    Quadruples.append(['VER', None, top, valAddr])
+
+#Función que maneja la generación de cuádruplos para variables dimensionadas   
+def p_cuadVarDim(p):
+    'cuadVarDim :'
+    global dimCounter, Operands_Stack, CurrentFunc, dirFunc, Constants, dimVarAux
+    dirBase = dirFunc[CurrentFunc]['vars'][dimVarAux].get('dir')
+    tipo = dirFunc[CurrentFunc]['vars'][dimVarAux].get('type')
+    if(dirBase not in Constants):
+        address = get_const_Mem('int')
+        Constants[dirBase] = {'dir': address,'type': 'int'}
+
+        address = Constants[dirBase].get('dir')
+        dim1 = Operands_Stack.pop()
+        addrPtr = getPointerVar(tipo)
+        print('tipo',tipo)
+        print("addrPtr",addrPtr)
+        print(dimVarAux)
+        Quadruples.append(['+',dim1.get('dir'),address,addrPtr])
+        Operands_Stack.append({'name':'indexVal','type':'int','dir': addrPtr})
+        dimCounter = 0
 
 
 parser = yacc.yacc()
@@ -790,6 +965,17 @@ if __name__ == "__main__":
    # data = input('file name:')
     with open("./test1.txt", 'r') as data:
         parser.parse(data.read())
-        print(dirFunc)
-        print(Quadruples)
-        print(Constants)
+        
+    pprint(dirFunc)
+    for i, quad in enumerate(Quadruples):
+        print(f"Quad {i}: {quad}")
+    pprint(Constants)
+
+    with open('dirFunc.pkl', 'wb') as f:
+        pickle.dump(dirFunc, f)
+
+    with open('Constants.pkl', 'wb') as f:
+        pickle.dump(Constants, f)
+
+    with open('Quadruples.pkl', 'wb') as f:
+        pickle.dump(Quadruples, f)
