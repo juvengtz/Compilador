@@ -18,7 +18,7 @@ main()
     found = 0;
     i = 0;
     
-    while (i < 10) Do 
+    while (i < 10) do 
     {   
         if (arr[i] == searchValue) then
         {

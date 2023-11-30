@@ -1,5 +1,6 @@
 import ply.yacc as yacc
 import sys
+import os
 from Lexer import tokens, lexer
 from Cubo_Semantico import *
 import pickle
@@ -999,8 +1000,26 @@ parser = yacc.yacc()
 
 
 if __name__ == "__main__":
-    data = input('file name:')
-    with open(data, 'r') as data:
+    txt_files = [f for f in os.listdir() if f.endswith('.txt')]
+
+    # Print a menu of options
+    print("Select a file to open:")
+    for i, file in enumerate(txt_files, start=1):
+        print(f"{i}. {file}")
+    print(f"{len(txt_files) + 1}. Enter a filename")
+
+    choice = input("Enter your choice: ")
+
+    if choice.isdigit() and 1 <= int(choice) <= len(txt_files):
+        filename = txt_files[int(choice) - 1]
+    elif choice == str(len(txt_files) + 1):
+        filename = input("Enter the filename: ")
+    else:
+        print("Invalid option")
+        sys.exit()
+
+    # Now you can use the filename variable in your code
+    with open(filename, 'r') as data:
         parser.parse(data.read())
         
     pprint(dirFunc)

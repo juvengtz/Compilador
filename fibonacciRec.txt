@@ -13,7 +13,7 @@ function int fibonacci(int m)
         return(1);
     }
     else{
-        return(fibonacci(m-1) + fibonacci(m-2));
+        return(fibonacci(m - 1) + fibonacci(m - 2));
     }
    }
 }

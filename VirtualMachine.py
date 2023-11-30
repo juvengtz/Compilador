@@ -191,7 +191,7 @@ while(Quadruples[currentCuad][0] != 'ENDPROC'):
 
         left = get_val(Quadruples[currentCuad][1], currentLevel)
         right = get_val(Quadruples[currentCuad][2], currentLevel)
-        res = left == right
+        res = (left == right)
         updateMemory(Quadruples[currentCuad][3], res)
         currentCuad += 1
         

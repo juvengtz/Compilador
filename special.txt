@@ -21,9 +21,14 @@ main ()
   z = varianza(arr);
   w = desv(arr);
   l = median(arr);
+  write("media");
   write(y);
+  write("moda");
   write(x);
+  write("varianza");
   write(z);
+  write("desv");
   write(w);
+  write("median");
   write(l);
 }

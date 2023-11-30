@@ -8,7 +8,7 @@ var int : i;
         return(1);
     }
     else{
-        return(m* factorial(m-1));
+        return(m* factorial(m - 1));
     }
 }
 

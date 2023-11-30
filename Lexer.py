@@ -26,6 +26,8 @@ reserved = {
     'then': 'THEN',
     'else': 'ELSE',
     'while': 'WHILE',
+    'for': 'FOR',
+    'to': 'TO',
     'do': 'DO',
     'media': 'MEDIA',
     'moda': 'MODA',
@@ -43,9 +45,9 @@ t_DIV = r'/'
 t_EQUAL = r'='
 t_GT = r'>'
 t_LT = r'<'
-t_EQ = r'=='
-t_LEQ = r'<='
-t_GEQ = r'>='
+t_EQ = r'\=\='
+t_LEQ = r'\<\='
+t_GEQ = r'\>\='
 t_COLON = r':'
 t_SEMICOLON = r';'
 t_COMMA = r','
