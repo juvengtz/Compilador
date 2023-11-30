@@ -1,0 +1,29 @@
+program funcSpec;
+var int: y, x, z, w, l, arr[10];
+
+
+main ()
+{
+  arr[0] = 3;
+  arr[1] = 4;
+  arr[2] = 2;
+  arr[3] = 7;
+  arr[4] = 4;
+  arr[5] = -2;
+  arr[6] = 2;
+  arr[7] = 17;
+  arr[8] = -9;
+  arr[9] = -8;
+
+  
+  y = media(arr);
+  x = moda(arr);
+  z = varianza(arr);
+  w = desv(arr);
+  l = median(arr);
+  write(y);
+  write(x);
+  write(z);
+  write(w);
+  write(l);
+}

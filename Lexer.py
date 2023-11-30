@@ -26,14 +26,12 @@ reserved = {
     'then': 'THEN',
     'else': 'ELSE',
     'while': 'WHILE',
-    'for': 'FOR',
-    'to': 'TO',
     'do': 'DO',
     'media': 'MEDIA',
     'moda': 'MODA',
-    'Varianza': 'VARIANZA',
-    'Reg': 'REG',
-    'PlotXY': 'PLOTXY'
+    'varianza': 'VARIANZA',
+    'desv': 'DESV',
+    'median': 'MEDIAN'
 }
 
 tokens += list(reserved.values())
@@ -69,13 +67,13 @@ def t_ID(t):
 
 
 def t_CTE_F(t):
-    r'\d+\.\d+'
+    r'[-]?\d+\.\d+'
     t.value = float(t.value)
     return t
 
 
 def t_CTE_I(t):
-    r'\d+'
+    r'[-]?\d+'
     t.value = int(t.value)
     return t
 

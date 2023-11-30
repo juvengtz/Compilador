@@ -2,7 +2,6 @@ import ply.yacc as yacc
 import sys
 from Lexer import tokens, lexer
 from Cubo_Semantico import *
-from Cuadruplo import *
 import pickle
 from pprint import pprint
 
@@ -80,7 +79,6 @@ def p_estatuto(p):
                 | retorno
                 | lectura
                 | repeticion'''
-                #| repeticion2'''
 
 
 def p_asignacion(p):
@@ -92,13 +90,12 @@ def p_llamada(p):
     '''llamada : ID llamadaEra L_PAREN fakebottom parm checkParamNum R_PAREN checkparentesis Gosub'''
     
 
-#def p_func_especial(p):
-#   '''func_especial : media
-#                     | moda
-#                     | varianza
-#                     | reg
-#                     | plotxy'''
-    
+def p_func_especial(p):
+    '''func_especial : MEDIA L_PAREN ID np_funcSpec R_PAREN 
+                     | MODA L_PAREN ID np_funcSpec R_PAREN 
+                     | VARIANZA L_PAREN ID np_funcSpec R_PAREN 
+                     | DESV L_PAREN ID np_funcSpec R_PAREN 
+                     | MEDIAN L_PAREN ID np_funcSpec R_PAREN'''
 
 
 
@@ -136,8 +133,6 @@ def p_else_aux(p):
 def p_repeticion(p):
     '''repeticion : WHILE addJump L_PAREN expOr R_PAREN GotoF DO bloque end_while'''
 
-#def p_repeticion2(p):
- #   ''' repeticion2 : FOR ID EQUAL expOr TO expOr DO bloque'''
 
 def p_parm(p):
     '''parm : expOr checkParam parm2
@@ -198,7 +193,8 @@ def p_var_cte(p):
                | CTE_I stack_operand_int
                | CTE_F stack_operand_float
                | CTE_CHAR stack_operand_char
-               | var_dim'''
+               | var_dim
+               | func_especial'''
     
 def p_var_dim(p):
     '''var_dim : ID stack_operand_id L_BRACKET verDim fakebottom expOr cuadVer R_BRACKET checkparentesis verDimNum cuadVarDim  '''
@@ -245,7 +241,6 @@ ParamCount = 0
 ParamPointer = 0
 tempCount = 0
 CallFunc = ''
-VarDimTable = []
 dimVarAux = ''
 dimCounter = 0
 
@@ -588,7 +583,7 @@ def p_checkparentesis(p):
 # agrega los cuádruplos AND OR a la lista de cuádruplos
 def p_checkAndOr(p):
     'checkAndOr :'
-    global Operators_Stack, Quadruples
+    global Operators_Stack, Quadruples,tempCount
     if Operators_Stack:
         if Operators_Stack[-1] == '&' or Operators_Stack[-1] == '|':
             right_operand = Operands_Stack.pop()
@@ -826,6 +821,50 @@ def p_np_read(p):
         address = dirFunc[CurrentFunc]['vars'][variable_name].get('dir')
         Quadruples.append(['READ', None, None, address])
 
+# Función que maneja la especificación de funciones especiales
+def p_np_funcSpec(p):
+    'np_funcSpec :'
+    # Declaración de variables globales
+    global dirFunc, CurrentFunc, Quadruples, dimCounter, Constants, Operands_Stack
+
+    # Obtiene el nombre del arreglo y el tipo de función especial de la pila de producción
+    arrayName = p[-1]
+    specFuncType = p[-3]
+
+    # Verifica si el arreglo ha sido declarado
+    if arrayName not in dirFunc[CurrentFunc]['vars']:
+        print('Variable not declared')
+        sys.exit()
+    else:
+        # Obtiene la dirección, el tipo y el valor de la variable
+        dire = dirFunc[CurrentFunc]['vars'][arrayName].get('dir')
+        tipo = dirFunc[CurrentFunc]['vars'][arrayName].get('type')
+        val = dirFunc[CurrentFunc]['vars'][arrayName]['dim'][dimCounter-1][0]
+        valAddr = Constants[val].get('dir')
+
+        # Verifica si el tipo de la variable es int o float
+        if tipo != 'int' and tipo != 'float':
+            print('Type mismatch')
+            sys.exit()
+        else:
+            # Obtiene una dirección de memoria temporal para el resultado
+            result_address = get_temp_Mem('float')
+
+            # Genera un cuádruplo dependiendo del tipo de función especial
+            if specFuncType == 'media':
+                Quadruples.append(['MEDIA', result_address, dire, valAddr])
+            elif specFuncType == 'moda':
+                Quadruples.append(['MODA', result_address, dire, valAddr])
+            elif specFuncType == 'varianza':
+                Quadruples.append(['VARIANZA', result_address, dire, valAddr])
+            elif specFuncType == 'desv':
+                Quadruples.append(['DESV', result_address, dire, valAddr])
+            elif specFuncType == 'median':
+                Quadruples.append(['MEDIAN', result_address, dire, valAddr])
+
+            # Agrega el resultado a la pila de operandos
+            Operands_Stack.append({'name': 'temp', 'type': tipo, 'dir': result_address})
+        
 #Inicia el analisis sintáctico
 def p_start(p):
     'start :'
@@ -946,24 +985,22 @@ def p_cuadVarDim(p):
     if(dirBase not in Constants):
         address = get_const_Mem('int')
         Constants[dirBase] = {'dir': address,'type': 'int'}
-
+    if dimCounter == 1:
         address = Constants[dirBase].get('dir')
         dim1 = Operands_Stack.pop()
         addrPtr = getPointerVar(tipo)
-        print('tipo',tipo)
-        print("addrPtr",addrPtr)
-        print(dimVarAux)
-        Quadruples.append(['+',dim1.get('dir'),address,addrPtr])
+        Quadruples.append(['SUM_BASE',dim1.get('dir'),address,addrPtr])
         Operands_Stack.append({'name':'indexVal','type':'int','dir': addrPtr})
-        dimCounter = 0
+
+    dimCounter = 0
 
 
 parser = yacc.yacc()
 
 
 if __name__ == "__main__":
-   # data = input('file name:')
-    with open("./test1.txt", 'r') as data:
+    data = input('file name:')
+    with open(data, 'r') as data:
         parser.parse(data.read())
         
     pprint(dirFunc)

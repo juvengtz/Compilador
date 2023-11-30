@@ -1,8 +1,8 @@
 import sys
-import re
-import Yacc
 import math
 import pickle
+import numpy as np
+import statistics
 
 with open('dirFunc.pkl', 'rb') as f:
     dirFunc = pickle.load(f)
@@ -66,19 +66,19 @@ def updateMemory(dir, val):
         charMemory[currentLevel][dir] = val
     elif dir >= 16000 and dir < 17000:
         boolMemory[currentLevel][dir] = val
-    elif dir >= 17000 and dir < 18000:
-        if Quadruples[currentCuad][2] == '':
+    elif dir >= 18000 and dir < 19000:
+        if Quadruples[currentCuad][2] == None:
             realVal = pointers[dir]
             pointVals[realVal] = math.floor(val)
-        elif Quadruples[currentCuad][2] != '':
+        elif Quadruples[currentCuad][2] != None:
             pointers[dir] = val
             if val not in pointVals:
                 pointVals[val] = None
-    elif dir >= 18000 and dir < 19000:
-        if Quadruples[currentCuad][2] == '':
+    elif dir >= 19000 and dir < 20000:
+        if Quadruples[currentCuad][2] == None:
             realVal = pointers[dir]
             pointVals[realVal] = val
-        elif Quadruples[currentCuad][2] != '':
+        elif Quadruples[currentCuad][2] != None:
             pointers[dir] = val
             if val not in pointVals:
                 pointVals[val] = None
@@ -125,12 +125,20 @@ def get_val(dir, currentLevel):
     elif dierction >= 19000 and dierction < 20000:
         aux = pointers[dierction]
         val = pointVals[aux]
-        
     if val is None:
         print(f"Error: uninitialized variable {dir}")
         sys.exit(1)
-
+        
+    
     return val
+
+def get_array_values(baseAddress, size):
+    array = []
+    x = 0
+    while(x < size):
+        array.append(pointVals[baseAddress+x])
+        x += 1
+    return array
 
 currentCuad = 0
 
@@ -180,7 +188,7 @@ while(Quadruples[currentCuad][0] != 'ENDPROC'):
         currentCuad += 1
         
     elif(Quadruples[currentCuad][0] == '=='):
-        
+
         left = get_val(Quadruples[currentCuad][1], currentLevel)
         right = get_val(Quadruples[currentCuad][2], currentLevel)
         res = left == right
@@ -222,6 +230,42 @@ while(Quadruples[currentCuad][0] != 'ENDPROC'):
     elif(Quadruples[currentCuad][0] == '='):
         left = get_val(Quadruples[currentCuad][1], currentLevel)
         updateMemory(Quadruples[currentCuad][3], left)
+        currentCuad += 1
+    
+    elif(Quadruples[currentCuad][0] == 'MEDIA'):
+        left = (Quadruples[currentCuad][2])
+        right = get_val(Quadruples[currentCuad][3], currentLevel)
+        array1 = get_array_values(left, right)
+        res = np.mean(array1)
+        updateMemory(Quadruples[currentCuad][1], res)
+        currentCuad += 1
+    elif(Quadruples[currentCuad][0] == 'MODA'):
+        left = (Quadruples[currentCuad][2])
+        right = get_val(Quadruples[currentCuad][3], currentLevel)
+        array1 = get_array_values(left, right)
+        res = statistics.mode(array1)
+        updateMemory(Quadruples[currentCuad][1], res)
+        currentCuad += 1
+    elif(Quadruples[currentCuad][0] == 'VARIANZA'):
+        left = (Quadruples[currentCuad][2])
+        right = get_val(Quadruples[currentCuad][3], currentLevel)
+        array1 = get_array_values(left, right)
+        res = np.var(array1)
+        updateMemory(Quadruples[currentCuad][1], res)
+        currentCuad += 1
+    elif(Quadruples[currentCuad][0] == 'DESV'):
+        left = (Quadruples[currentCuad][2])
+        right = get_val(Quadruples[currentCuad][3], currentLevel)
+        array1 = get_array_values(left, right)
+        res = np.std(array1)
+        updateMemory(Quadruples[currentCuad][1], res)
+        currentCuad += 1
+    elif(Quadruples[currentCuad][0] == 'MEDIAN'):
+        left = (Quadruples[currentCuad][2])
+        right = get_val(Quadruples[currentCuad][3], currentLevel)
+        array1 = get_array_values(left, right)
+        res = np.median(array1)
+        updateMemory(Quadruples[currentCuad][1], res)
         currentCuad += 1
         
     elif(Quadruples[currentCuad][0] == 'GOTOF'):
@@ -307,5 +351,11 @@ while(Quadruples[currentCuad][0] != 'ENDPROC'):
             print("Index out of bounds")
             sys.exit()
         currentCuad += 1
-        
+    elif(Quadruples[currentCuad][0] == 'SUM_BASE'):
+        left = get_val(Quadruples[currentCuad][1], currentLevel)
+        right = get_val(Quadruples[currentCuad][2], currentLevel)
+        res = left + right
+        updateMemory(Quadruples[currentCuad][3], res)
+        currentCuad += 1
+
     
