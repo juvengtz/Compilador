@@ -1,13 +1,15 @@
+# MyRLanguage
+
+Proyecto de compiladores, MyRLanguage es un lenguaje de programcacion
+con el funcionamiento base de c mas funciones especiales estadisticas
+
 # AvanceActual: 8
 
-## Avances Completados: 5
+## Avances Completados: 8
 
 ### Estado de Proyecto:
 
-Se agregaron mas puntos neuralgicos en la semantica
-para la Generacion de Codigo de Estatutos Condicionales
-Actualmente trabajando en la generacion de de Codigo de
-funciones para hacer la maquina virual despues
+Completado :)
 
 ## Avance 1
 
