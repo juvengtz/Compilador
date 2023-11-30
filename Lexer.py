@@ -26,8 +26,6 @@ reserved = {
     'then': 'THEN',
     'else': 'ELSE',
     'while': 'WHILE',
-    'for': 'FOR',
-    'to': 'TO',
     'do': 'DO',
     'media': 'MEDIA',
     'moda': 'MODA',

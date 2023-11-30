@@ -1002,7 +1002,6 @@ parser = yacc.yacc()
 if __name__ == "__main__":
     txt_files = [f for f in os.listdir() if f.endswith('.txt')]
 
-    # Print a menu of options
     print("Select a file to open:")
     for i, file in enumerate(txt_files, start=1):
         print(f"{i}. {file}")
@@ -1018,7 +1017,6 @@ if __name__ == "__main__":
         print("Invalid option")
         sys.exit()
 
-    # Now you can use the filename variable in your code
     with open(filename, 'r') as data:
         parser.parse(data.read())
         
